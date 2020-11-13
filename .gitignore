@@ -1,6 +1,10 @@
 .idea
 db.sqlite3
 password.txt
+secret.py
+
+# Collected static files
+photomanager/serve
 
 .vagrant
 

@@ -11,6 +11,8 @@ django-two-factor-auth = "*"
 tensorflow = "*"
 whitenoise = "*"
 phonenumbers = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 black = "==20.8b1"

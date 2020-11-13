@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -133,10 +134,12 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static/"),)
 
 LOGIN_URL = "two_factor:login"
 
-# this one is optional
-LOGIN_REDIRECT_URL = "two_factor:profile"
-
 AUTH_USER_MODEL = "users.User"
+
+# Celery
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_URL = "redis://localhost:6379/1"
+CELERY_TIMEZONE = "America/New_York"    # Change maybe?
 
 try:
     from .secret import *

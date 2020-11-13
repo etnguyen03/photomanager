@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.boot_timeout = 1000
 
   # Django HTTP port
-  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, host_ip: "127.0.0.1"
 
   # Define the VM and set up some things
   config.vm.hostname = "photomanager-vm"
