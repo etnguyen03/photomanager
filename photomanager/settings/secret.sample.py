@@ -5,4 +5,3 @@ SECRET_KEY = ""
 # If in production, also add to ALLOWED_HOSTS.
 DEBUG = False
 ALLOWED_HOSTS = []
-
