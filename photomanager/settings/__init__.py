@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # photomanager apps
     "photomanager.apps",
     "photomanager.apps.users",
+    "photomanager.apps.photos",
 ]
 
 MIDDLEWARE = [
