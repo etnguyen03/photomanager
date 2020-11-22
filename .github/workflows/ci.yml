@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev --deploy
+
+      - name: check Black formatting
+        run: |
+          pipenv run black --check .
+
+      - name: check dependencies against PyUp and PEP 508
+        run: |
+          pipenv check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.8 ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev --deploy
+
+      - name: Run tests
+        run: |
+          pipenv run coverage run --source photomanager manage.py test
+          pipenv run coverage xml
+
+      - name: Migrate database
+        run: pipenv run python3 manage.py migrate
+
+      - name: Collect static files
+        run: pipenv run python3 manage.py collectstatic --noinput
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
