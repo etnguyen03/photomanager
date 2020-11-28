@@ -38,11 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Django OTP, Two Factor Authentication
-    "django_otp",
-    "django_otp.plugins.otp_static",
-    "django_otp.plugins.otp_totp",
-    "two_factor",
+    # Celery
+    "django_celery_results",
+    # Social auth
+    "social_django",
     # photomanager apps
     "photomanager.apps",
     "photomanager.apps.users",
@@ -139,8 +138,40 @@ AUTH_USER_MODEL = "users.User"
 
 # Celery
 CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "default"
 CELERY_BROKER_URL = "redis://localhost:6379/1"
 CELERY_TIMEZONE = "America/New_York"  # Change maybe?
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+AUTHENTICATION_BACKENDS = [
+    "photomanager.apps.users.oauth.NextcloudOAuth2",
+]
+SOCIAL_AUTH_URL_NAMESPACE = "social"
+SOCIAL_AUTH_USER_FIELDS = [
+    "username",
+    "email",
+]
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.social_auth.associate_by_email",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+)
+SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 try:
     from .secret import *

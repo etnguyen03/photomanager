@@ -12,5 +12,11 @@ class User(AbstractUser):
     # (or, in a development environment, just exists) at `/data`.
     # Each user has a folder in `/data`.
     subdirectory = FilePathField(
-        path="/data", null=False, blank=False, default="/data/"
+        path="/data",
+        null=False,
+        blank=False,
+        default="/data/",
+        recursive=True,
+        allow_folders=True,
+        allow_files=False,
     )
