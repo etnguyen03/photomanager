@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c1429a12ecf109b7aaa501a9f3e8b6d08c26e00b3e9f0685c6d4e01911d0320d"
+            "sha256": "d8cb501b3fe71f7178d7c4db1a48d6d40d9cb803d20528e75a75c5aa266eb327"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -214,6 +214,14 @@
             "index": "pypi",
             "version": "==1.7.1"
         },
+        "exif": {
+            "hashes": [
+                "sha256:87699a3032b902dc72b6e565c51ce2711390cb6d5a7689ff12e04ba427dc95c2",
+                "sha256:dc53ffc2e09245676944367b0b7038d6cb7d73175d80b4ec9d84333d1af17500"
+            ],
+            "index": "pypi",
+            "version": "==1.0.4"
+        },
         "gast": {
             "hashes": [
                 "sha256:8f46f5be57ae6889a4e16e2ca113b1703ef17f2b0abceb83793eaba9e1351a45",
@@ -420,6 +428,13 @@
             ],
             "index": "pypi",
             "version": "==8.12.13"
+        },
+        "plum-py": {
+            "hashes": [
+                "sha256:9328ec7502046134c5f16b04d85947559006e200d7268b7d5ed30f88735a48e5"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==0.3.1"
         },
         "prompt-toolkit": {
             "hashes": [

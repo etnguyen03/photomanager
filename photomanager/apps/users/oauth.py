@@ -1,6 +1,5 @@
-from social_core.backends.oauth import BaseOAuth2
-
 from django.conf import settings
+from social_core.backends.oauth import BaseOAuth2
 
 
 class NextcloudOAuth2(BaseOAuth2):

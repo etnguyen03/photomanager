@@ -4,4 +4,6 @@ from . import views
 
 app_name = "photos"
 
-urlpatterns = []
+urlpatterns = [
+    path("rescan", views.rescan_directory),
+]

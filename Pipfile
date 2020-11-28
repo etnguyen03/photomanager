@@ -16,6 +16,7 @@ social-auth-app-django = "*"
 python-magic = "*"
 django-celery-results = "*"
 django-redis = "*"
+exif = "*"
 
 [dev-packages]
 black = "==20.8b1"
