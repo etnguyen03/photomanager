@@ -138,8 +138,6 @@ def _view_single_photo(
     except Exception:
         pass
 
-    print(context)
-
     return render(request, "photos/view_single_photo.html", context=context)
 
 
