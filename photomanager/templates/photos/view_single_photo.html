@@ -8,9 +8,16 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-6">
-                <div class="card">
+                <div class="card border-0">
                     <a href="#" data-toggle="modal" data-target="#photolightbox">
-                        <img src="{% url "photos:raw_image" image_id %}" class="img-fluid"
+                        <div class="spinner-wrapper">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="{% url "photos:raw_image" image_id %}" class="img-fluid img-spinner"
                              style="cursor: zoom-in;" aria-describedby="#details-description" />
                     </a>
                 </div>
@@ -93,7 +100,14 @@
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-auto">
-                                <img src="{% url "photos:raw_image" image_id %}" class="img-fluid" />
+                                <div class="spinner-wrapper">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <img src="{% url "photos:raw_image" image_id %}" class="img-fluid img-spinner" />
                             </div>
                         </div>
                     </div>
