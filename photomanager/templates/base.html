@@ -31,6 +31,17 @@
     </nav>
 
     <div class="container pt-3">
+        {% if messages %}
+            <div class="row">
+                <div class="col">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}" role="alert">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
 </body>
