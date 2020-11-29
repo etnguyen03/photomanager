@@ -17,10 +17,12 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
 
+from photomanager.apps.albums import urls as albums_urls
 from photomanager.apps.photos import urls as photos_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("photos/", include(photos_urls)),
+    path("albums/", include(albums_urls)),
     url("", include("social_django.urls", namespace="social")),
 ]

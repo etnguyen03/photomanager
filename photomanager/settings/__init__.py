@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     # Celery
     "django_celery_results",
     # Social auth
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     "photomanager.apps",
     "photomanager.apps.users",
     "photomanager.apps.photos",
+    "photomanager.apps.albums",
 ]
 
 MIDDLEWARE = [

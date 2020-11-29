@@ -20,6 +20,8 @@ exif = "*"
 timezonefinder = "*"
 pillow = "*"
 "hurry.filesize" = "*"
+django-extensions = "*"
+ipython = "*"
 
 [dev-packages]
 black = "==20.8b1"

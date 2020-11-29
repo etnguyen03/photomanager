@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load tz %}
+
+{% block titleprefix %}Album{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">{{ album.name }}</h1>
+            <p class="lead">{{ album.description }}</p>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row py-3">
+            {% for photo in photos %}
+                <div class="col align-self-center">
+                    <div class="card border-0">
+                        <a href="{% url "photos:view_single_photo" photo.id %}">
+                            <div class="spinner-wrapper">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <img src="{% url "photos:raw_image" photo.id %}" class="img-fluid img-spinner">
+                        </a>
+                    </div>
+                </div>
+                {% if not forloop.last and forloop.counter|divisibleby:3 %}
+                    {# Close out the row and start a new one #}
+                    </div>
+                    <div class="row">
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
