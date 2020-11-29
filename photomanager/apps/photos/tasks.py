@@ -1,12 +1,19 @@
 import base64
+import io
 import json
 import os
 import subprocess
 from pathlib import Path
 
+import magic
+import pytz
 from celery import shared_task
+from dateutil import parser
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from exif import Image
+from exif import Image as exif_Image
+from PIL import Image as PIL_Image
+from timezonefinder import TimezoneFinder
 
 from .models import Photo
 
@@ -44,7 +51,7 @@ def scan_dir_for_changes(directory: Path, username: str) -> None:
             actual_path = f"{str(user.subdirectory)}{file}"
             photo = Photo.objects.get_or_create(file=actual_path, user=user)
             if photo[1]:  # If this was just created by get_or_create
-                process_image.delay(photo.id)
+                process_image.delay(photo[0].id)
 
 
 @shared_task
@@ -81,4 +88,61 @@ def process_image(photo_id: str) -> None:
 
     image_data: bytes = base64.b64decode(file_read[photo.file]["data"])
 
-    exif_image = Image(image_data)
+    m = magic.Magic(mime=True)
+    assert "image" in m.from_buffer(image_data), "Not an image file"
+
+    exif_image = exif_Image(image_data)
+
+    # Update the photo's metadata
+
+    if "datetime" in dir(exif_image):
+        # EXIF does not include timezones (WHY?!?) in timestamps.
+        # Therefore, we use the GPS location to find the timezone of the image,
+        # and where there is no GPS location, we use server time (likely UTC).
+        tf = TimezoneFinder()
+
+        if "gps_longitude" in dir(exif_image) and "gps_latitude" in dir(exif_image):
+            deg, minutes, seconds = exif_image.gps_longitude
+            direction = exif_image.gps_longitude_ref
+            # https://stackoverflow.com/a/54294962
+            longitude = (
+                float(deg) + float(minutes) / 60 + float(seconds) / (60 * 60)
+            ) * (-1 if direction in ["W", "S"] else 1)
+
+            deg, minutes, seconds = exif_image.gps_latitude
+            direction = exif_image.gps_latitude_ref
+            latitude = (
+                float(deg) + float(minutes) / 60 + float(seconds) / (60 * 60)
+            ) * (-1 if direction in ["W", "S"] else 1)
+            tz = tf.timezone_at(lng=longitude, lat=latitude)
+        else:
+            tz = settings.TIME_ZONE
+
+        photo.photo_taken_time = parser.parse(exif_image.datetime).replace(
+            tzinfo=pytz.timezone(tz)
+        )
+
+    # Height and width are a property of every image
+    image_pillow = PIL_Image.open(io.BytesIO(image_data))
+    width, height = image_pillow.size
+    photo.image_width = width
+    photo.image_height = height
+    photo.image_size = file_read[photo.file]["size"]
+
+    if "make" in dir(exif_image):
+        photo.camera_make = exif_image.make
+    if "model" in dir(exif_image):
+        photo.camera_model = exif_image.model
+    if "aperture_value" in dir(exif_image):
+        photo.aperture_value = exif_image.aperture_value
+    if "shutter_speed_value" in dir(exif_image):
+        photo.shutter_speed_value = exif_image.shutter_speed_value
+    if "focal_length" in dir(exif_image):
+        photo.focal_length = exif_image.focal_length
+    if "photographic_sensitivity" in dir(exif_image):
+        photo.iso = exif_image.photographic_sensitivity
+    if "flash" in dir(exif_image):
+        photo.flash_fired = exif_image.flash.flash_fired
+        photo.flash_mode = exif_image.flash.flash_mode
+
+    photo.save()

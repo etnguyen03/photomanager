@@ -32,10 +32,11 @@ assert (
 m = magic.Magic(mime=True)
 
 # Chroot into this directory
+os.chdir(args.file.parent)
 os.chroot(args.file.parent)
 
 # Get the content of the file
-with open(args.file, "rb") as file:
+with open(args.file.name, "rb") as file:
     contents = file.read()
 
 print(
@@ -43,7 +44,8 @@ print(
         {
             str(args.file): {
                 "data": base64.b64encode(contents).decode(),
-                "mime": m.from_file(str(args.file)),
+                "mime": m.from_file(str(args.file.name)),
+                "size": os.path.getsize(args.file.name),
             }
         }
     )

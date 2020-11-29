@@ -43,7 +43,7 @@ class Photo(models.Model):
         help_text="Width, in pixels, of the image", null=True
     )
     image_size = models.PositiveIntegerField(
-        help_text="File size (on disk) of the image", null=True
+        help_text="File size (on disk, in bytes) of the image", null=True
     )
 
     camera_make = models.CharField(max_length=150, blank=True)
@@ -63,6 +63,10 @@ class Photo(models.Model):
     flash_fired = models.BooleanField(help_text="Did the flash fire?", null=True)
 
     class FlashMode(models.IntegerChoices):
+        """
+        Enum for flash_mode field; describes possible flash modes
+        """
+
         UNKNOWN = 0
         COMPULSORY_FLASH_FIRING = 1
         COMPULSORY_FLASH_SUPPRESSION = 2

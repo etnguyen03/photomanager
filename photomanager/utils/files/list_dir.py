@@ -27,6 +27,7 @@ assert os.path.isdir(args.directory), "This directory does not exist"
 m = magic.Magic(mime=True)
 
 # Chroot into this directory
+os.chdir(args.directory)
 os.chroot(args.directory)
 
 # List the files in this directory
