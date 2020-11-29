@@ -6,10 +6,8 @@ import subprocess
 from pathlib import Path
 
 from django.contrib.auth.decorators import login_required
-from django.http import (FileResponse, Http404, HttpResponse,
-                         HttpResponseForbidden)
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
-
 from hurry.filesize import size
 
 from .models import Photo
