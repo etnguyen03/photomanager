@@ -28,6 +28,10 @@ jobs:
         run: |
           pipenv run black --check .
 
+      - name: check isort formatting
+        run: |
+          pipenv run isort --check .
+
       - name: check dependencies against PyUp and PEP 508
         run: |
           pipenv check
