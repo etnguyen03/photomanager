@@ -6,8 +6,7 @@
 
 {% block content %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col"></div>
+        <div class="row justify-content-center">
             <div class="col-6">
                 <div class="card">
                     <a href="#" data-toggle="modal" data-target="#photolightbox">
@@ -16,11 +15,10 @@
                     </a>
                 </div>
             </div>
-            <div class="col"></div>
         </div>
     </div>
 
-    <div class="container-fluid pt-4">
+    <div class="container-fluid pt-5">
         <div class="row">
             <div class="col">
                 <p id="details-description">
@@ -46,12 +44,37 @@
                                 <td><p id="details-camera">{{ photo.camera_make|title }} {{ photo.camera_model }}</p></td>
                             </tr>
                         {% endif %}
+                        {% if photo.aperture_value or photo.shutter_speed_value or photo.focal_length or photo.iso %}
+                            <tr>
+                                <td>
+                                    <i class="fas fa-hourglass-half" aria-label="Further details on image (shutter speed, aperture, etc.)"
+                                    aria-details="#details-shutter"></i>
+                                </td>
+                                <td>
+                                    <p id="#details-shutter">
+                                        {% if photo.shutter_speed_seconds %}
+                                            <span class="pr-2" aria-label="Shutter speed in seconds">{{ photo.shutter_speed_seconds }}"</span>
+                                        {% endif %}
+                                        {% if photo.aperture_value %}
+                                            <span class="pr-2" aria-label="Aperture, f-stop">f/{{ photo.aperture_value_f_stop }}</span>
+                                        {% endif %}
+                                        {% if photo.focal_length %}
+                                            <span class="pr-2" aria-label="Focal length, millimeters">{{ photo.focal_length }}mm</span>
+                                        {% endif %}
+                                        {% if photo.iso %}
+                                            <span class="pr-2" aria-label="ISO">ISO {{ photo.iso }}</span>
+                                        {% endif %}
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endif %}
                         {% if photo.image_width and photo.image_height and size_hurry %}    {# if image has been processed #}
                             <tr>
                                 <td><i class="fas fa-file-image" aria-label="Image file characteristics" aria-details="#details-file"></i></td>
                                 <td><p id="details-file">{{ photo.image_width }} &#215; {{ photo.image_height }}, {{ size_hurry }}</p></td>
                             </tr>
                         {% endif %}
+
                     </tbody>
                 </table>
             </div>

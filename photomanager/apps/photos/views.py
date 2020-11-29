@@ -3,10 +3,12 @@ import io
 import json
 import os
 import subprocess
+from fractions import Fraction
 from pathlib import Path
 
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden
+from django.http import (FileResponse, Http404, HttpResponse,
+                         HttpResponseForbidden)
 from django.shortcuts import get_object_or_404, render
 from hurry.filesize import size
 
@@ -86,10 +88,17 @@ def view_single_photo(request, image_id):
         "image_id": image_id,
         "photo": photo,
         "size_hurry": None,
+        "shutter_speed_seconds": None,
+        "aperture_f": None,
     }
 
     try:
         context["size_hurry"] = size(photo.image_size)
+    except Exception:
+        pass
+
+    try:
+        context["shutter_speed_seconds"] = Fraction(1, 2 ** photo.shutter_speed_value)
     except Exception:
         pass
 

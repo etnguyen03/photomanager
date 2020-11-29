@@ -1,4 +1,6 @@
 import uuid
+from fractions import Fraction
+from math import sqrt
 
 from django.db import models
 
@@ -52,9 +54,28 @@ class Photo(models.Model):
     aperture_value = models.FloatField(
         help_text="Aperture in the APEX system", null=True
     )
+
+    @property
+    def aperture_value_f_stop(self) -> float:
+        """
+        Returns the aperture value as an f-stop.
+        :return: a float.
+        """
+        # Source: http://www.fifi.org/doc/jhead/exif-e.html
+        return round(sqrt(2) ** self.aperture_value, 1)
+
     shutter_speed_value = models.FloatField(
         help_text="Shutter speed in the APEX system", null=True
     )
+
+    @property
+    def shutter_speed_seconds(self) -> Fraction:
+        """
+        Returns the shutter speed value as a fraction of a second.
+        :return: a fraction of a second
+        """
+        return Fraction(1, int(round(2 ** self.shutter_speed_value, 0)))
+
     focal_length = models.FloatField(help_text="Focal length in millimeters", null=True)
     iso = models.PositiveIntegerField(
         help_text="Sensor sensitivity in ISO", null=True, verbose_name="ISO"
