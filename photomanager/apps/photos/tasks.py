@@ -3,12 +3,12 @@ import io
 import json
 import os
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 import magic
 import pytz
 from celery import shared_task
-from dateutil import parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from exif import Image as exif_Image
@@ -118,9 +118,9 @@ def process_image(photo_id: str) -> None:
         else:
             tz = settings.TIME_ZONE
 
-        photo.photo_taken_time = parser.parse(exif_image.datetime).replace(
-            tzinfo=pytz.timezone(tz)
-        )
+        photo.photo_taken_time = datetime.strptime(
+            exif_image.datetime, "%Y:%m:%d %H:%M:%S"
+        ).replace(tzinfo=pytz.timezone(tz))
 
     # Height and width are a property of every image
     image_pillow = PIL_Image.open(io.BytesIO(image_data))

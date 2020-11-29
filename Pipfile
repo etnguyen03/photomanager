@@ -18,7 +18,6 @@ django-celery-results = "*"
 django-redis = "*"
 exif = "*"
 timezonefinder = "*"
-python-dateutil = "*"
 pillow = "*"
 "hurry.filesize" = "*"
 
