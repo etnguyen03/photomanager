@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/vagrant/photomanager", SharedFoldersEnableSymlinksCreate: false
 
   # Provision from a script
-  config.vm.provision "shell", path: "vagrant-config/provision.sh"
+  config.vm.provision "shell", path: "scripts/vagrant-config/provision.sh"
 
   # Set SSH username
   config.ssh.username = "vagrant"
