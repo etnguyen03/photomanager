@@ -9,6 +9,8 @@ from pathlib import Path
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
 from hurry.filesize import size
 
 from .models import Photo
@@ -102,3 +104,15 @@ def view_single_photo(request, image_id):
         pass
 
     return render(request, "photos/view_single_photo.html", context=context)
+
+
+class PhotoUpdate(UpdateView):
+    model = Photo
+    fields = ["description"]
+    template_name = "photos/photo_update.html"
+
+    def get_success_url(self):
+        # https://stackoverflow.com/a/64108595/2034128
+        pk = self.kwargs["pk"]
+        return reverse_lazy("photos:view_single_photo", kwargs={"image_id": pk})
+

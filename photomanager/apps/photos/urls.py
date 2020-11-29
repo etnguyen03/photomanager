@@ -9,4 +9,5 @@ urlpatterns = [
     path("reprocess/<uuid:image_id>", views.reprocess_file, name="reprocess"),
     path("raw_image/<uuid:image_id>", views.get_raw_image, name="raw_image"),
     path("image/<uuid:image_id>", views.view_single_photo, name="view_single_photo"),
+    path("update/<uuid:pk>", views.PhotoUpdate.as_view(), name="update_photo"),
 ]

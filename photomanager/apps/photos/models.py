@@ -25,7 +25,7 @@ class Photo(models.Model):
     user = models.ForeignKey(
         User, help_text="The user that this photo belongs to.", on_delete=models.CASCADE
     )
-    description = models.TextField(help_text="Description for this photo.")
+    description = models.TextField(help_text="Description for this photo.", blank=True)
 
     creation_time = models.DateTimeField(
         auto_now_add=True, help_text="Photo creation time.", null=True
