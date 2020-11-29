@@ -28,7 +28,9 @@ def view_album(request, album_id: str) -> HttpResponse:
 
 
 def view_album_share(request, album_id: str, share_album_id: str) -> HttpResponse:
-    album_share_link = get_object_or_404(AlbumShareLink, id=share_album_id)
+    album_share_link = get_object_or_404(
+        AlbumShareLink, id=share_album_id, album__id=album_id
+    )
 
     album = album_share_link.album
 
