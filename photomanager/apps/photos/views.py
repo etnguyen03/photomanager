@@ -1,5 +1,16 @@
+import base64
+import io
+import json
+import os
+import subprocess
+from pathlib import Path
+
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import (FileResponse, Http404, HttpResponse,
+                         HttpResponseForbidden)
+from django.shortcuts import get_object_or_404, render
+
+from hurry.filesize import size
 
 from .models import Photo
 from .tasks import process_image, scan_dir_for_changes
@@ -22,3 +33,66 @@ def reprocess_file(request, image_id):
 
     process_image.delay(image_id)
     return HttpResponse("OK")
+
+
+# TODO: Refactor to not require login_required for public viewing
+@login_required
+def get_raw_image(request, image_id) -> HttpResponse:
+    """
+    Returns the image specified by image_id
+    :param request: Django request
+    :param image_id: Image ID to request
+    :return: an HTTP response
+    """
+
+    photo = get_object_or_404(Photo, id=image_id)
+
+    if photo.user != request.user:
+        return HttpResponseForbidden()
+
+    # Read file
+    READ_FILE_PATH = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        "utils/files/read_file.py",
+    )
+    file_read: dict = json.loads(
+        subprocess.run(
+            [
+                "sudo",
+                "pipenv",
+                "run",
+                "python3",
+                READ_FILE_PATH,
+                photo.file,
+            ],  # sudo required for chroot
+            capture_output=True,
+            text=True,
+        ).stdout
+    )
+
+    return FileResponse(
+        io.BytesIO(base64.b64decode(file_read[photo.file]["data"])),
+        filename=Path(photo.file).name,
+        content_type=file_read[photo.file]["mime"],
+    )
+
+
+@login_required
+def view_single_photo(request, image_id):
+    photo = get_object_or_404(Photo, id=image_id)
+
+    if photo.user != request.user:
+        return HttpResponseForbidden()
+
+    context = {
+        "image_id": image_id,
+        "photo": photo,
+        "size_hurry": None,
+    }
+
+    try:
+        context["size_hurry"] = size(photo.image_size)
+    except Exception:
+        pass
+
+    return render(request, "photos/view_single_photo.html", context=context)

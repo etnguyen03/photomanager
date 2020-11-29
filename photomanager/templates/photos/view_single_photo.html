@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load tz %}
+
+{% block titleprefix %}Photo{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <div class="card">
+                    <a href="#" data-toggle="modal" data-target="#photolightbox">
+                        <img src="{% url "photos:raw_image" image_id %}" class="img-fluid"
+                             style="cursor: zoom-in;" aria-describedby="#details-description" />
+                    </a>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid pt-4">
+        <div class="row">
+            <div class="col">
+                <p id="details-description">
+                    {% if photo.description|length > 0 %}
+                        {{ photo.description }}
+                    {% else %}
+                        <i>No description was provided.</i>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col">
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        {% if photo.photo_taken_time %}
+                            <tr>
+                                <td><i class="far fa-calendar-alt" aria-label="Taken on (date and time)" aria-details="#details-date"></i></td>
+                                <td><p id="details-date">{{ photo.photo_taken_time }}</p></td>
+                            </tr>
+                        {% endif %}
+                        {% if photo.camera_make or photo.camera_model %}
+                            <tr>
+                                <td><i class="fas fa-camera" aria-label="Taken using" aria-details="#details-camera"></i></td>
+                                <td><p id="details-camera">{{ photo.camera_make|title }} {{ photo.camera_model }}</p></td>
+                            </tr>
+                        {% endif %}
+                        {% if photo.image_width and photo.image_height and size_hurry %}    {# if image has been processed #}
+                            <tr>
+                                <td><i class="fas fa-file-image" aria-label="Image file characteristics" aria-details="#details-file"></i></td>
+                                <td><p id="details-file">{{ photo.image_width }} &#215; {{ photo.image_height }}, {{ size_hurry }}</p></td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="photolightbox" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-auto">
+                                <img src="{% url "photos:raw_image" image_id %}" class="img-fluid" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

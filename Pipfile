@@ -20,6 +20,7 @@ exif = "*"
 timezonefinder = "*"
 python-dateutil = "*"
 pillow = "*"
+"hurry.filesize" = "*"
 
 [dev-packages]
 black = "==20.8b1"
