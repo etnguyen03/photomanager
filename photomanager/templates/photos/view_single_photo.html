@@ -90,6 +90,34 @@
                                 </td>
                             </tr>
                         {% endif %}
+                        {# Flash mode compulsory on all EXIF data #}
+                            <tr>
+                                <td><i class="fas fa-bolt" aria-label="Flash characteristics" aria-details="#details-flash"></i></td>
+                                <td>
+                                    <p id="details-flash">
+                                        <span class="pr-2" aria-label="Did the flash fire?">
+                                            {% if photo.flash_fired %}
+                                                Flash fired
+                                            {% elif photo.flash_fired == None %}
+                                                Flash status unknown
+                                            {% else %}
+                                                Flash did not fire
+                                            {% endif %}
+                                        </span>
+                                        <span class="pr-2" aria-label="Flash mode">
+                                            {% if photo.flash_mode == 1 %}
+                                                Flash forced
+                                            {% elif photo.flash_mode == 2 %}
+                                                Flash disabled
+                                            {% elif photo.flash_mode == 3 %}
+                                                Flash on automatic mode
+                                            {% else %}
+                                                Flash mode unknown
+                                            {% endif %}
+                                        </span>
+                                    </p>
+                                </td>
+                            </tr>
                         {% if photo.image_width and photo.image_height and size_hurry %}    {# if image has been processed #}
                             <tr>
                                 <td><i class="fas fa-file-image" aria-label="Image file characteristics" aria-details="#details-file"></i></td>
