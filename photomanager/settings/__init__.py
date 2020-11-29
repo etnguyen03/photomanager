@@ -175,6 +175,8 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 try:
     from .secret import *
 except ImportError:

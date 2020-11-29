@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block titleprefix %}Confirm Delete Share Link{% endblock %}
+
+{% block content %}
+    <h2>Confirm Deletion</h2>
+    <form method="post">
+        <p>
+            Are you sure you want to delete the share link
+            <a href="{% url "albums:share_display" object.album.id object.id %}">
+                {{ request.get_host }}{% url "albums:share_display" object.album.id object.id %}
+            </a>, corresponding to the album {{ object.album.name }}?
+        </p>
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger" value="Yes, delete">
+    </form>
+{% endblock %}

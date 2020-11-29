@@ -35,6 +35,8 @@ class AlbumShareLink(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
 
+    description = models.CharField(max_length=1000, blank=True)
+
     # Currently, this may seem useless (just read the creator from the album), but
     # in the future when user to user sharing is implemented, this may be useful.
     creator = models.ForeignKey(

@@ -1,6 +1,10 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView, UpdateView
 
 from photomanager.apps.albums.models import Album, AlbumShareLink
 
@@ -41,3 +45,64 @@ def view_album_share(request, album_id: str, share_album_id: str) -> HttpRespons
     }
 
     return render(request, "albums/view_single_album.html", context=context)
+
+
+@login_required
+def album_share_link_create(request, album_id: str) -> HttpResponse:
+    album = get_object_or_404(Album, id=album_id)
+
+    if request.user != album.owner:
+        return HttpResponseForbidden()
+
+    AlbumShareLink.objects.create(album=album, creator=request.user)
+
+    messages.success(request, "Share link successfully created.")
+
+    return redirect(reverse_lazy("albums:share_links", kwargs={"album_id": album_id}))
+
+
+@login_required
+def album_share_link_list(request, album_id: str) -> HttpResponse:
+    album = get_object_or_404(Album, id=album_id)
+
+    if request.user != album.owner:
+        return HttpResponseForbidden()
+
+    context = {
+        "album": album,
+        "share_links": AlbumShareLink.objects.filter(album__id=album_id),
+    }
+
+    return render(request, "albums/list_share_links.html", context=context)
+
+
+class AlbumShareLinkDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = AlbumShareLink
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "albums:share_links", kwargs={"album_id": self.kwargs["album_id"]}
+        )
+
+    def test_func(self):
+        return (
+            get_object_or_404(AlbumShareLink, id=self.kwargs["pk"]).album.owner
+            == self.request.user
+        )
+
+
+class AlbumShareLinkEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = AlbumShareLink
+    fields = ["description"]
+    template_name_suffix = "_update"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "albums:share_links", kwargs={"album_id": self.kwargs["album_id"]}
+        )
+
+    def test_func(self):
+        return (
+            get_object_or_404(AlbumShareLink, id=self.kwargs["pk"]).album.owner
+            == self.request.user
+        )

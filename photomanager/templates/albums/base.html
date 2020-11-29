@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4"><a href="{% url "albums:display" album.id %}">{{ album.name }}</a></h1>
+            <p class="lead">{{ album.description }}</p>
+            {% if user.is_authenticated %}
+                <div class="row">
+                    <div class="col">
+                        <a href="{% url "albums:share_links" album.id %}" class="btn btn-outline-primary">View Share Links</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% block album_content %}{% endblock %}
+{% endblock %}

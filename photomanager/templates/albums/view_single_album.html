@@ -1,16 +1,10 @@
-{% extends "base.html" %}
+{% extends "albums/base.html" %}
 
 {% load tz %}
 
-{% block titleprefix %}Album{% endblock %}
+{% block titleprefix %}View Album - {{ album.name }}{% endblock %}
 
-{% block content %}
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-4">{{ album.name }}</h1>
-            <p class="lead">{{ album.description }}</p>
-        </div>
-    </div>
+{% block album_content %}
     <div class="container-fluid">
         <div class="row py-3">
             {% for photo in photos %}
