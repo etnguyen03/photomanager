@@ -56,7 +56,9 @@ class Photo(models.Model):
         help_text="Shutter speed in the APEX system", null=True
     )
     focal_length = models.FloatField(help_text="Focal length in millimeters", null=True)
-    iso = models.PositiveIntegerField(help_text="Sensor sensitivity in ISO", null=True)
+    iso = models.PositiveIntegerField(
+        help_text="Sensor sensitivity in ISO", null=True, verbose_name="ISO"
+    )
 
     flash_fired = models.BooleanField(help_text="Did the flash fire?", null=True)
 
