@@ -16,7 +16,11 @@
             {% for photo in photos %}
                 <div class="col align-self-center">
                     <div class="card border-0">
-                        <a href="{% url "photos:view_single_photo" photo.id %}">
+                        <a href="{% if album_share_id %}
+                                    {% url "photos:view_single_photo_album_share" photo.id album_share_id %}
+                                {% else %}
+                                    {% url "photos:view_single_photo" photo.id %}
+                                {% endif %}">
                             <div class="spinner-wrapper">
                                 <div class="d-flex justify-content-center">
                                     <div class="spinner-border" role="status">
@@ -24,7 +28,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <img src="{% url "photos:raw_image" photo.id %}" class="img-fluid img-spinner">
+                            <img src="{% if album_share_id %}{% url "photos:raw_image_album_share" photo.id album_share_id %}{% else %}{% url "photos:raw_image" photo.id %}{% endif %}" class="img-fluid img-spinner">
                         </a>
                     </div>
                 </div>

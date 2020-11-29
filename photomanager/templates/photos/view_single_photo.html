@@ -17,7 +17,11 @@
                                 </div>
                             </div>
                         </div>
-                        <img src="{% url "photos:raw_image" image_id %}" class="img-fluid img-spinner"
+                        <img src="{% if album_share_id %}
+                                    {% url "photos:raw_image_album_share" photo.id album_share_id %}
+                                {% else %}
+                                    {% url "photos:raw_image" photo.id %}
+                                {% endif %}" class="img-fluid img-spinner"
                              style="cursor: zoom-in;" aria-describedby="#details-description" />
                     </a>
                 </div>
@@ -35,9 +39,11 @@
                         <i>No description was provided.</i>
                     {% endif %}
                 </p>
+                {% if user == photo.user %}
                 <p>
                     <a class="btn btn-outline-primary" href="{% url "photos:update_photo" image_id %}">Edit</a>
                 </p>
+                {% endif %}
             </div>
             <div class="col">
                 <table class="table table-borderless table-sm">
@@ -116,7 +122,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <img src="{% url "photos:raw_image" image_id %}" class="img-fluid img-spinner" />
+                                <img src="{% if album_share_id %}
+                                    {% url "photos:raw_image_album_share" photo.id album_share_id %}
+                                {% else %}
+                                    {% url "photos:raw_image" photo.id %}
+                                {% endif %}" class="img-fluid img-spinner" />
                             </div>
                         </div>
                     </div>

@@ -29,3 +29,18 @@ class Album(models.Model):
     )
 
     photos = models.ManyToManyField(Photo)
+
+
+class AlbumShareLink(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+
+    # Currently, this may seem useless (just read the creator from the album), but
+    # in the future when user to user sharing is implemented, this may be useful.
+    creator = models.ForeignKey(
+        User, help_text="Creator of this Album share link", on_delete=models.CASCADE
+    )
+
+    creation_time = models.DateTimeField(
+        auto_now_add=True, help_text="Album share link creation time.", null=True
+    )
