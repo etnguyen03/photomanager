@@ -44,8 +44,14 @@
                     <tbody>
                         {% if photo.photo_taken_time %}
                             <tr>
-                                <td><i class="far fa-calendar-alt" aria-label="Taken on (date and time)" aria-details="#details-date"></i></td>
-                                <td><p id="details-date">{{ photo.photo_taken_time }}</p></td>
+                                <td><i class="far fa-calendar-alt" aria-label="Dates and times for this image" aria-details="#details-date"></i></td>
+                                <td>
+                                    <div id="details-date">
+                                        <p>Taken on {{ photo.photo_taken_time }}</p>
+                                        <p>Uploaded on {{ photo.creation_time }}</p>
+                                        <p>Last modified {{ photo.last_modified_time }}</p>
+                                    </div>
+                                </td>
                             </tr>
                         {% endif %}
                         {% if photo.camera_make or photo.camera_model %}

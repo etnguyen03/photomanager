@@ -115,4 +115,3 @@ class PhotoUpdate(UpdateView):
         # https://stackoverflow.com/a/64108595/2034128
         pk = self.kwargs["pk"]
         return reverse_lazy("photos:view_single_photo", kwargs={"image_id": pk})
-
