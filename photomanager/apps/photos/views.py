@@ -124,22 +124,14 @@ def _view_single_photo(
     :return: HttpResponse
     """
     context = {
-        "image_id": photo.id,
         "photo": photo,
         "size_hurry": None,
-        "shutter_speed_seconds": None,
-        "aperture_f": None,
         "album_share_id": album_share_id,
         "license": Photo.License(photo.license).label,
     }
 
     try:
         context["size_hurry"] = size(photo.image_size)
-    except Exception:
-        pass
-
-    try:
-        context["shutter_speed_seconds"] = Fraction(1, 2 ** photo.shutter_speed_value)
     except Exception:
         pass
 
