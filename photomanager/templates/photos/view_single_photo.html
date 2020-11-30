@@ -32,18 +32,40 @@
     <div class="container-fluid pt-5">
         <div class="row">
             <div class="col">
-                <p id="details-description">
-                    {% if photo.description|length > 0 %}
-                        {{ photo.description }}
-                    {% else %}
-                        <i>No description was provided.</i>
-                    {% endif %}
-                </p>
-                {% if user == photo.user %}
-                <p>
-                    <a class="btn btn-outline-primary" href="{% url "photos:update_photo" image_id %}">Edit</a>
-                </p>
-                {% endif %}
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <tr>
+                            <td><i class="far fa-sticky-note" aria-label="Description of image" aria-details="#details-description"></i></td>
+                            <td>
+                                <p id="details-description">
+                                    {% if photo.description|length > 0 %}
+                                        {{ photo.description }}
+                                    {% else %}
+                                        <i>No description was provided.</i>
+                                    {% endif %}
+                                </p>
+                            </td>
+                        </tr>
+                        {% if user == photo.user %}
+                        <tr>
+                            <td><i class="fas fa-pencil-alt" aria-label="Edit links" aria-details="#edit-links"></i></td>
+                            <td>
+                                <p id="edit-links">
+                                    <a class="btn btn-outline-primary" href="{% url "photos:update_photo" image_id %}">Edit</a>
+                                </p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td><i class="fas fa-user-alt" aria-label="Owner of picture" aria-details="#details-owner"></i></td>
+                            <td>
+                                <p id="details-owner">
+                                    Uploaded by {{ photo.user.username }}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col">
                 <table class="table table-borderless table-sm">
