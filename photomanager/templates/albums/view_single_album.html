@@ -35,6 +35,10 @@
                     </div>
                     <div class="row py-3">
                 {% endif %}
+            {% empty %}
+                <div class="col">
+                    <p>There are no photos in this album.</p>
+                </div>
             {% endfor %}
         </div>
     </div>
