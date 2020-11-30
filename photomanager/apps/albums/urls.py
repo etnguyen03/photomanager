@@ -6,6 +6,7 @@ app_name = "albums"
 
 urlpatterns = [
     path("<uuid:album_id>", views.view_album, name="display"),
+    path("<uuid:pk>/edit", views.AlbumEditView.as_view(), name="edit"),
     path(
         "<uuid:album_id>/share/<uuid:share_album_id>",
         views.view_album_share,

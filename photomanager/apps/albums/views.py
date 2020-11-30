@@ -47,6 +47,20 @@ def view_album_share(request, album_id: str, share_album_id: str) -> HttpRespons
     return render(request, "albums/view_single_album.html", context=context)
 
 
+class AlbumEditView(UserPassesTestMixin, UpdateView):
+    model = Album
+    fields = ["name", "description", "photos"]
+    template_name_suffix = "_update"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "albums:share_links", kwargs={"album_id": self.kwargs["pk"]}
+        )
+
+    def test_func(self):
+        return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
+
+
 @login_required
 def album_share_link_create(request, album_id: str) -> HttpResponse:
     album = get_object_or_404(Album, id=album_id)

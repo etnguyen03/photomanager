@@ -9,6 +9,7 @@
                 <div class="row">
                     <div class="col">
                         <a href="{% url "albums:share_links" album.id %}" class="btn btn-outline-primary">View Share Links</a>
+                        <a href="{% url "albums:edit" album.id %}" class="btn btn-outline-primary">Edit</a>
                     </div>
                 </div>
             {% endif %}
