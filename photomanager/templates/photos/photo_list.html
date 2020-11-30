@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load bootstrap_pagination %}
+
+{% block titleprefix %}Index{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row py-3">
+            {% for photo in object_list %}
+                <div class="col align-self-center">
+                    <div class="card border-0">
+                        <a href="{% url "photos:view_single_photo" photo.id %}">
+                            <div class="spinner-wrapper">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <img data-src="{% url "photos:raw_image" photo.id %}" class="img-fluid lazy img-spinner-lazy">
+                        </a>
+                    </div>
+                </div>
+                {% if not forloop.last and forloop.counter|divisibleby:3 %}
+                    {# Close out the row and start a new one #}
+                    </div>
+                    <div class="row py-3">
+                {% endif %}
+            {% empty %}
+                <div class="col">
+                    <p>There are no photos.</p>
+                    {% if not user.is_authenticated %}
+                        <p>You are not authenticated; there may be more photos visible if you log in.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row py-3">
+            <div class="col justify-content-center">
+                {% bootstrap_paginate page_obj range=10 extra_pagination_classes="justify-content-center" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

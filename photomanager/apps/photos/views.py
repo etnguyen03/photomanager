@@ -3,16 +3,16 @@ import io
 import json
 import os
 import subprocess
-from fractions import Fraction
 from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
+from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
 
@@ -185,3 +185,18 @@ class PhotoUpdate(UserPassesTestMixin, UpdateView):
         # https://stackoverflow.com/a/64108595/2034128
         pk = self.kwargs["pk"]
         return reverse_lazy("photos:view_single_photo", kwargs={"image_id": pk})
+
+
+class IndexView(ListView):
+    model = Photo
+    paginate_by = 100
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Photo.objects.filter(publicly_accessible=True).order_by(
+                "-photo_taken_time"
+            )
+        else:
+            return Photo.objects.filter(user=self.request.user).order_by(
+                "-photo_taken_time"
+            )
