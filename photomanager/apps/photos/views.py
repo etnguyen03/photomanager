@@ -130,6 +130,7 @@ def _view_single_photo(
         "shutter_speed_seconds": None,
         "aperture_f": None,
         "album_share_id": album_share_id,
+        "license": Photo.License(photo.license).label,
     }
 
     try:
@@ -182,7 +183,7 @@ def view_single_photo_album_share(request, image_id, album_share_id):
 
 class PhotoUpdate(UserPassesTestMixin, UpdateView):
     model = Photo
-    fields = ["description"]
+    fields = ["description", "license"]
     template_name = "photos/photo_update.html"
 
     def test_func(self):

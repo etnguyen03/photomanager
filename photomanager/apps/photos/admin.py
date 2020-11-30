@@ -31,6 +31,7 @@ class PhotoAdmin(admin.ModelAdmin):
                     "file",
                     "user",
                     "description",
+                    "license",
                     "creation_time",
                     "last_modified_time",
                 )

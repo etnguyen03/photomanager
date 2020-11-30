@@ -34,7 +34,7 @@ class Photo(models.Model):
         auto_now=True, help_text="Photo modification time.", null=True
     )
 
-    # Metadata
+    # EXIF Metadata
     photo_taken_time = models.DateTimeField(
         help_text="Time the photo was taken.", null=True, blank=True
     )
@@ -98,3 +98,27 @@ class Photo(models.Model):
     )
 
     # TODO: GPS information
+
+    # User modifiable metadata
+    class License(models.TextChoices):
+        """
+        Enum of license choices that the user can choose from.
+        """
+
+        ARR = ("ARR", "All rights reserved")
+        PDM = ("PDM", "Public Domain Mark")
+        CC0 = ("CC0", "CC0")
+        CCBY = ("CCBY", "Creative Commons Attribution")
+        CCBYSA = ("CCBYSA", "Creative Commons Attribution Share-Alike")
+        CCBYND = ("CCBYND", "Creative Commons Attribution-NoDerivs")
+        CCBYNC = ("CCBYNC", "Creative Commons Attribution-NonCommercial")
+        CCBYNCSA = ("CCBYNCSA", "Creative Commons Attribution-NonCommercial-ShareAlike")
+        CCBYNCND = ("CCBYNCND", "Creative Commons Attribution-NonCommercial-NoDerivs")
+
+    license = models.CharField(
+        max_length=50,
+        choices=License.choices,
+        default=License.ARR,
+        blank=False,
+        null=False,
+    )
