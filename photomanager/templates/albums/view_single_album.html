@@ -22,7 +22,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <img src="{% if album_share_id %}{% url "photos:raw_image_album_share" photo.id album_share_id %}{% else %}{% url "photos:raw_image" photo.id %}{% endif %}" class="img-fluid img-spinner">
+                            <img data-src="{% if album_share_id %}
+                                        {% url "photos:raw_image_album_share" photo.id album_share_id %}
+                                    {% else %}
+                                        {% url "photos:raw_image" photo.id %}
+                                    {% endif %}" class="img-fluid lazy img-spinner-lazy">
                         </a>
                     </div>
                 </div>
