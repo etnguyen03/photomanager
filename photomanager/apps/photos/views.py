@@ -6,11 +6,13 @@ import subprocess
 from fractions import Fraction
 from pathlib import Path
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
 
@@ -26,16 +28,18 @@ def rescan_directory(request):
 
 
 @login_required
+@require_POST
 def reprocess_file(request, image_id):
-    try:
-        photo = Photo.objects.get(id=image_id)
-        if photo.user != request.user:
-            return HttpResponseForbidden()
-    except Photo.DoesNotExist:
-        return Http404()
+    photo = get_object_or_404(Photo, id=image_id)
 
-    process_image.delay(image_id)
-    return HttpResponse("OK")
+    if photo.user != request.user:
+        return HttpResponseForbidden()
+
+    process_image.delay(photo.id)
+    messages.success(request, "EXIF metadata refresh queued.")
+    return redirect(
+        reverse_lazy("photos:view_single_photo", kwargs={"image_id": photo.id})
+    )
 
 
 def _get_raw_image(request, photo: Photo) -> FileResponse:

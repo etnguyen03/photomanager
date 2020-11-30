@@ -9,4 +9,13 @@
         {% csrf_token %}
         <input type="submit" value="Update" class="btn btn-success">
     </form>
+
+    <div class="pt-3">
+        <h3>Regenerate Metadata</h3>
+        <form method="post" action="{% url "photos:reprocess" object.id %}">
+            <p>This button will refresh the EXIF metadata shown below the image.</p>
+            {% csrf_token %}
+            <input type="submit" value="Regenerate Metadata" class="btn btn-success">
+        </form>
+    </div>
 {% endblock %}
