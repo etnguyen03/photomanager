@@ -17,6 +17,9 @@ class NextcloudOAuth2(BaseOAuth2):
             "email": profile["ocs"]["data"]["email"],
         }
 
+    def get_user_id(self, details, response):
+        return details["username"]
+
     def user_data(self, access_token, *args, **kwargs):
         return self.get_json(
             f"https://{settings.NEXTCLOUD_URI}/ocs/v2.php/cloud/user?format=json",
