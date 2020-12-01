@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 
 from photomanager.apps.albums import urls as albums_urls
@@ -26,5 +27,6 @@ urlpatterns = [
     path("photos/", include(photos_urls)),
     path("albums/", include(albums_urls)),
     path("", photos_views.IndexView.as_view(), name="index"),
+    path("logout", LogoutView.as_view(), name="logout"),
     url("", include("social_django.urls", namespace="social")),
 ]

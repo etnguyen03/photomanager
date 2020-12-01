@@ -139,6 +139,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "serve/")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static/"),)
 
 LOGIN_URL = reverse_lazy("social:begin", args=["nextcloud"])
+LOGIN_REDIRECT_URL = reverse_lazy("index")
+LOGOUT_REDIRECT_URL = reverse_lazy("index")
 
 AUTH_USER_MODEL = "users.User"
 

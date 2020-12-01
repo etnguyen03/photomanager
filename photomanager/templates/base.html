@@ -29,7 +29,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                {% include 'navbar_links.html' %}
+                {% if not user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url "social:begin" "nextcloud" %}">Login</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url "logout" %}">Logout</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
