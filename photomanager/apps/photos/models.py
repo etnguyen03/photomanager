@@ -126,6 +126,6 @@ class Photo(models.Model):
     publicly_accessible = models.BooleanField(
         default=False,
         null=False,
-        help_text="Whether this photo is publicly accessible. If checked, this photo is"
+        help_text="Whether this photo is publicly accessible. If checked, this photo is "
         "listed on the front page and accessible without authentication.",
     )

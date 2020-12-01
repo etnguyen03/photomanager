@@ -5,6 +5,7 @@ import os
 import subprocess
 from pathlib import Path
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -77,7 +78,6 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
     )
 
 
-@login_required
 def get_raw_image(request, image_id) -> HttpResponse:
     """
     Returns the image specified by image_id
@@ -88,8 +88,12 @@ def get_raw_image(request, image_id) -> HttpResponse:
 
     photo = get_object_or_404(Photo, id=image_id)
 
-    if photo.user != request.user:
-        return HttpResponseForbidden()
+    if not photo.publicly_accessible:
+        if not request.user.is_authenticated:
+            return redirect(settings.LOGIN_URL)
+
+        if photo.user != request.user:
+            return HttpResponseForbidden()
 
     return _get_raw_image(request, photo)
 
@@ -138,7 +142,6 @@ def _view_single_photo(
     return render(request, "photos/view_single_photo.html", context=context)
 
 
-@login_required
 def view_single_photo(request, image_id: str) -> HttpResponse:
     """
     View for a single photo
@@ -149,8 +152,12 @@ def view_single_photo(request, image_id: str) -> HttpResponse:
     """
     photo = get_object_or_404(Photo, id=image_id)
 
-    if photo.user != request.user:
-        return HttpResponseForbidden()
+    if not photo.publicly_accessible:
+        if not request.user.is_authenticated:
+            return redirect(settings.LOGIN_URL)
+
+        if photo.user != request.user:
+            return HttpResponseForbidden()
 
     return _view_single_photo(request, photo)
 
@@ -175,7 +182,7 @@ def view_single_photo_album_share(request, image_id, album_share_id):
 
 class PhotoUpdate(UserPassesTestMixin, UpdateView):
     model = Photo
-    fields = ["description", "license"]
+    fields = ["description", "license", "publicly_accessible"]
     template_name = "photos/photo_update.html"
 
     def test_func(self):
