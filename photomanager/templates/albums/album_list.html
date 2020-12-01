@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load bootstrap_pagination %}
+
+{% block titleprefix %}Albums{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col"></th>   {# Contains buttons, but we don't want a header #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for album in object_list %}
+                    <tr>
+                        <td><a href="{% url "albums:display" album.id %}">{{ album.name }}</a></td>
+                        <td>
+                            {# Edit album #}
+                            <a href="{% url "albums:edit" album.id %}" class="btn btn-outline-warning" aria-label="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            {# Delete album #}
+                            <a href="{% url "albums:delete" album.id %}" class="btn btn-outline-danger" aria-label="Delete">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>There are no albums to display.</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, UpdateView
+from django.views.generic import DeleteView, UpdateView, ListView
 
 from photomanager.apps.albums.models import Album, AlbumShareLink
 
@@ -53,12 +53,30 @@ class AlbumEditView(UserPassesTestMixin, UpdateView):
     template_name_suffix = "_update"
 
     def get_success_url(self):
-        return reverse_lazy(
-            "albums:share_links", kwargs={"album_id": self.kwargs["pk"]}
-        )
+        return reverse_lazy("albums:display", kwargs={"album_id": self.kwargs["pk"]})
 
     def test_func(self):
         return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
+
+
+class AlbumListView(ListView):
+    model = Album
+    paginate_by = 25
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Album.objects.filter(publicly_accessible=True).order_by(
+                "-creation_time"
+            )
+        else:
+            return Album.objects.filter(owner=self.request.user).order_by(
+                "-creation_time"
+            )
+
+
+class AlbumDeleteView(DeleteView):
+    model = Album
+    success_url = reverse_lazy("albums:list")
 
 
 @login_required

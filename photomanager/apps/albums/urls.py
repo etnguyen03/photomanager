@@ -5,8 +5,10 @@ from . import views
 app_name = "albums"
 
 urlpatterns = [
+    path("", views.AlbumListView.as_view(), name="list"),
     path("<uuid:album_id>", views.view_album, name="display"),
     path("<uuid:pk>/edit", views.AlbumEditView.as_view(), name="edit"),
+    path("<uuid:pk>/delete", views.AlbumDeleteView.as_view(), name="delete"),
     path(
         "<uuid:album_id>/share/<uuid:share_album_id>",
         views.view_album_share,

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block titleprefix %}Confirm Delete Album{% endblock %}
+
+{% block content %}
+    <h2>Confirm Deletion</h2>
+    <form method="post">
+        <p>
+            Are you sure you want to delete the album {{ object.name }}, consisting of {{ object.photos.count }}
+            photo{{ object.photos.count|pluralize }}?
+        </p>
+        <p>
+            The {{ object.photos.count }} photo{{ object.photos.count|pluralize }} will remain intact.
+        </p>
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger" value="Yes, delete">
+    </form>
+{% endblock %}

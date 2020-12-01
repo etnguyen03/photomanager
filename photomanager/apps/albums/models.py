@@ -28,6 +28,13 @@ class Album(models.Model):
         auto_now=True, help_text="Album modification time.", null=True
     )
 
+    publicly_accessible = models.BooleanField(
+        default=False,
+        null=False,
+        help_text="Whether this album is publicly accessible. If checked, this album is"
+        "listed on the front page and accessible without authentication.",
+    )
+
     photos = models.ManyToManyField(Photo)
 
 
