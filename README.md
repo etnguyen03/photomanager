@@ -2,6 +2,12 @@
 
 _Because fuck Google Photos._
 
+![CI](https://github.com/etnguyen03/photomanager/workflows/CI/badge.svg?branch=master&event=push)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e6d2ba974509498fbfe7885e9d94c9f3)](https://www.codacy.com/gh/etnguyen03/photomanager/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=etnguyen03/photomanager&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e6d2ba974509498fbfe7885e9d94c9f3)](https://www.codacy.com/gh/etnguyen03/photomanager/dashboard?utm_source=github.com&utm_medium=referral&utm_content=etnguyen03/photomanager&utm_campaign=Badge_Coverage)
+[![GitHub stars](https://img.shields.io/github/stars/etnguyen03/photomanager)](https://github.com/etnguyen03/photomanager/stargazers)
+[![GitHub license](https://img.shields.io/github/license/etnguyen03/photomanager)](https://github.com/etnguyen03/photomanager/blob/master/LICENSE.md)
+
 **NOTE**: Definitely not ready for any production usage.
 My goal is to be somewhat close to production ready by the time that
 Google Photos goes non-free (currently set for July 2021) but
