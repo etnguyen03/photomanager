@@ -17,7 +17,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
 
-from ..albums.models import AlbumShareLink
+from ..albums.models import AlbumShareLink, Album
 from .models import Photo
 from .tasks import process_image, scan_dir_for_changes
 
@@ -127,11 +127,30 @@ def _view_single_photo(
     :param album_share_id: Album share link, if it is to be included
     :return: HttpResponse
     """
+
+    # Find the albums that this photo is a part of
+    album_queryset_list = []
+    if request.user.is_authenticated:
+        album_queryset_list.append(
+            Album.objects.filter(photos=photo, owner=request.user)
+        )
+
+    if album_share_id:
+        album_queryset_list.append(
+            Album.objects.filter(
+                photos=photo,
+                id=get_object_or_404(AlbumShareLink, id=album_share_id).album.id,
+            )
+        )
+
+    albums = Album.objects.filter(photos=photo, publicly_accessible=True).union(*album_queryset_list)
+
     context = {
         "photo": photo,
         "size_hurry": None,
         "album_share_id": album_share_id,
         "license": Photo.License(photo.license).label,
+        "albums": albums,
     }
 
     try:

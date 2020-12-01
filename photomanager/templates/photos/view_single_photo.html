@@ -46,6 +46,40 @@
                                 </p>
                             </td>
                         </tr>
+                        <tr>
+                            <td><i class="fas fa-images" aria-label="Albums this image is a part of" aria-details="#details-albums"></i></td>
+                            <td>
+                                <div id="details-albums">
+                                    {% if albums %}
+                                        <p>This photo is a part of the following albums:</p>
+                                        <ul>
+                                            {% for album in albums %}
+                                                <li><a href="
+                                                    {% if album_share_id %}
+                                                        {% url "albums:share_display" album.id album_share_id %}
+                                                    {% else %}
+                                                        {% url "albums:display" album.id %}
+                                                    {% endif %}">{{ album.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p>This image is not a part of any album.</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-user-friends" aria-label="Is this image publicly accessible?" aria-details="#details-public"></i></td>
+                            <td>
+                                <p id="details-public">
+                                    {% if photo.publicly_accessible %}
+                                    This photo is publicly accessible.
+                                    {% else %}
+                                    This photo is not publicly accessible.
+                                    {% endif %}
+                                </p>
+                            </td>
+                        </tr>
                         {% if user == photo.user %}
                         <tr>
                             <td><i class="fas fa-pencil-alt" aria-label="Edit links" aria-details="#edit-links"></i></td>
