@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, UpdateView, ListView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from photomanager.apps.albums.models import Album, AlbumShareLink
 
@@ -49,7 +49,7 @@ def view_album_share(request, album_id: str, share_album_id: str) -> HttpRespons
 
 class AlbumEditView(UserPassesTestMixin, UpdateView):
     model = Album
-    fields = ["name", "description", "photos"]
+    fields = ["name", "description", "publicly_accessible", "photos"]
     template_name_suffix = "_update"
 
     def get_success_url(self):
@@ -57,6 +57,18 @@ class AlbumEditView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
+
+
+class AlbumCreateView(LoginRequiredMixin, CreateView):
+    model = Album
+    fields = ["name", "description", "publicly_accessible", "photos"]
+
+    def get_success_url(self):
+        return reverse_lazy("albums:display", kwargs={"album_id": self.object.id})
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super(AlbumCreateView, self).form_valid(form)
 
 
 class AlbumListView(ListView):

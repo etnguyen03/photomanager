@@ -17,7 +17,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
 
-from ..albums.models import AlbumShareLink, Album
+from ..albums.models import Album, AlbumShareLink
 from .models import Photo
 from .tasks import process_image, scan_dir_for_changes
 
@@ -143,7 +143,9 @@ def _view_single_photo(
             )
         )
 
-    albums = Album.objects.filter(photos=photo, publicly_accessible=True).union(*album_queryset_list)
+    albums = Album.objects.filter(photos=photo, publicly_accessible=True).union(
+        *album_queryset_list
+    )
 
     context = {
         "photo": photo,
