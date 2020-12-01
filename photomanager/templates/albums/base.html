@@ -3,7 +3,11 @@
 {% block content %}
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-4"><a href="{% url "albums:display" album.id %}">{{ album.name }}</a></h1>
+            <h1 class="display-4"><a href="{% if album_share_id %}
+                                                {% url "albums:share_display" album.id album_share_id %}
+                                            {% else %}
+                                                {% url "albums:display" album.id %}
+                                            {% endif %}">{{ album.name }}</a></h1>
             <p class="lead">{{ album.description }}</p>
             {% if user.is_authenticated %}
                 <div class="row">
