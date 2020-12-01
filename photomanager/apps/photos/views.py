@@ -58,9 +58,7 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
     )
     file_read: dict = json.loads(
         subprocess.run(
-            ["sudo"]
-            if os.getuid() != 0
-            else []
+            (["sudo"] if os.getuid() != 0 else [])
             + [
                 "pipenv",
                 "run",
