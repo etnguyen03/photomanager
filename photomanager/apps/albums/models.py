@@ -32,7 +32,8 @@ class Album(models.Model):
         default=False,
         null=False,
         help_text="Whether this album is publicly accessible. If checked, this album is "
-        "listed on the front page and accessible without authentication.",
+        "listed on the front page and accessible without authentication. The photos within this album "
+        "are not visible on the front page, however, they are publicly accessible with their link.",
     )
 
     photos = models.ManyToManyField(Photo)

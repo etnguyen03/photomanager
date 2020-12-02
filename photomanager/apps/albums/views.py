@@ -1,15 +1,21 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    ListView,
+    UpdateView,
+    DetailView,
+)
 
 from photomanager.apps.albums.models import Album, AlbumShareLink
 
 
-@login_required
 def view_album(request, album_id: str) -> HttpResponse:
     """
     View for viewing an album.
@@ -20,8 +26,11 @@ def view_album(request, album_id: str) -> HttpResponse:
     """
     album = get_object_or_404(Album, id=album_id)
 
-    if album.owner != request.user:
-        return HttpResponseForbidden()
+    if not album.publicly_accessible:
+        if not request.user.is_authenticated:
+            return redirect(settings.LOGIN_URL)
+        if album.owner != request.user:
+            return HttpResponseForbidden()
 
     context = {
         "album": album,

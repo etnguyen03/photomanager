@@ -89,11 +89,13 @@ def get_raw_image(request, image_id) -> HttpResponse:
     photo = get_object_or_404(Photo, id=image_id)
 
     if not photo.publicly_accessible:
-        if not request.user.is_authenticated:
-            return redirect(settings.LOGIN_URL)
+        # Check if this photo is a part of any publicly visible albums.
+        if Album.objects.filter(photos=photo, publicly_accessible=True).count() == 0:
+            if not request.user.is_authenticated:
+                return redirect(settings.LOGIN_URL)
 
-        if photo.user != request.user:
-            return HttpResponseForbidden()
+            if photo.user != request.user:
+                return HttpResponseForbidden()
 
     return _get_raw_image(request, photo)
 
@@ -174,11 +176,13 @@ def view_single_photo(request, image_id: str) -> HttpResponse:
     photo = get_object_or_404(Photo, id=image_id)
 
     if not photo.publicly_accessible:
-        if not request.user.is_authenticated:
-            return redirect(settings.LOGIN_URL)
+        # Check if this photo is a part of any publicly visible albums.
+        if Album.objects.filter(photos=photo, publicly_accessible=True).count() == 0:
+            if not request.user.is_authenticated:
+                return redirect(settings.LOGIN_URL)
 
-        if photo.user != request.user:
-            return HttpResponseForbidden()
+            if photo.user != request.user:
+                return HttpResponseForbidden()
 
     return _view_single_photo(request, photo)
 
