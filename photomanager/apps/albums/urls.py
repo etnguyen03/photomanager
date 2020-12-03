@@ -16,7 +16,9 @@ urlpatterns = [
         name="share_display",
     ),
     path(
-        "<uuid:album_id>/share/links", views.album_share_link_list, name="share_links"
+        "<uuid:album_id>/share/links",
+        views.AlbumShareLinkList.as_view(),
+        name="share_links",
     ),
     path(
         "<uuid:album_id>/share/links/create",

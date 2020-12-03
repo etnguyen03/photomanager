@@ -113,19 +113,25 @@ def album_share_link_create(request, album_id: str) -> HttpResponse:
     return redirect(reverse_lazy("albums:share_links", kwargs={"album_id": album_id}))
 
 
-@login_required
-def album_share_link_list(request, album_id: str) -> HttpResponse:
-    album = get_object_or_404(Album, id=album_id)
+class AlbumShareLinkList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = AlbumShareLink
+    paginate_by = 25
 
-    if request.user != album.owner:
-        return HttpResponseForbidden()
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["album"] = get_object_or_404(Album, id=self.kwargs["album_id"])
+        return context
 
-    context = {
-        "album": album,
-        "share_links": AlbumShareLink.objects.filter(album__id=album_id),
-    }
+    def test_func(self):
+        return (
+            get_object_or_404(Album, id=self.kwargs["album_id"]).owner
+            == self.request.user
+        )
 
-    return render(request, "albums/list_share_links.html", context=context)
+    def get_queryset(self):
+        return AlbumShareLink.objects.filter(
+            album=get_object_or_404(Album, id=self.kwargs["album_id"])
+        )
 
 
 class AlbumShareLinkDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
