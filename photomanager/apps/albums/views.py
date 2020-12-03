@@ -131,7 +131,7 @@ class AlbumShareLinkList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_queryset(self):
         return AlbumShareLink.objects.filter(
             album=get_object_or_404(Album, id=self.kwargs["album_id"])
-        )
+        ).order_by("-creation_time")
 
 
 class AlbumShareLinkDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
