@@ -6,44 +6,55 @@
     <h2>Share Links</h2>
     <p>Share these links to grant public access to albums and their photos.</p>
 
-    <p><a href="{% url "albums:share_links_create" album.id %}" class="btn btn-outline-primary">Create New Share Link</a></p>
+    <div class="row">
+        <div class="col">
+            <form action="{% url "albums:share_links_create" album.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-outline-success" value="Create New Share Link" />
+            </form>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Share Link</th>
-                <th scope="col">Description</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for link in share_links %}
-                <tr>
-                    <td>
-                        <a href="{% url "albums:share_display" album.id link.id %}">
-                            {{ request.get_host }}{% url "albums:share_display" album.id link.id %}
-                        </a>
-                    </td>
-                    <td>{{ link.description }}</td>
-                    <td>
-                        {# Edit link #}
-                        <a href="{% url "albums:share_links_edit" album.id link.id %}" class="btn btn-outline-warning" aria-label="Edit">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a>
-                        {# Delete link #}
-                        <a href="{% url "albums:share_links_delete" album.id link.id %}" class="btn btn-outline-danger" aria-label="Delete">
-                            <i class="far fa-trash-alt"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td>There are no share links.</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="row pt-3">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Share Link</th>
+                        <th scope="col">Description</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in share_links %}
+                        <tr>
+                            <td>
+                                <a href="{% url "albums:share_display" album.id link.id %}">
+                                    {{ request.get_host }}{% url "albums:share_display" album.id link.id %}
+                                </a>
+                            </td>
+                            <td>{{ link.description }}</td>
+                            <td>
+                                {# Edit link #}
+                                <a href="{% url "albums:share_links_edit" album.id link.id %}" class="btn btn-outline-warning" aria-label="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                {# Delete link #}
+                                <a href="{% url "albums:share_links_delete" album.id link.id %}" class="btn btn-outline-danger" aria-label="Delete">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td>There are no share links.</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 {% endblock %}

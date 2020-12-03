@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from photomanager.apps.albums.models import Album, AlbumShareLink
@@ -98,6 +99,7 @@ class AlbumDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 @login_required
+@require_POST
 def album_share_link_create(request, album_id: str) -> HttpResponse:
     album = get_object_or_404(Album, id=album_id)
 
