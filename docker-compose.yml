@@ -1,0 +1,39 @@
+# Read the Wiki on Github for configuration instructions
+# before running `docker-compose up -d`.
+
+version: "3.8"
+services:
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+
+  postgres:
+    image: postgres:13
+    volumes:
+      - photomanager-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: photomanager
+      # Supply a password before you deploy
+      POSTGRES_PASSWORD: ""
+    expose:
+      - "5432"
+
+  photomanager:
+    image: etnguyen03/photomanager
+    volumes:
+      - ./photomanager/settings/secret.py:/app/photomanager/settings/secret.py
+      # Change the source of the mount below to your Nextcloud data folder.
+      # This is typically /var/www/nextcloud/data
+      # For instance, change the line below to "- /var/www/nextcloud/data:/data
+      - photomanager-photos:/data
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - "8000:8000"
+
+volumes:
+  photomanager-db:
+  photomanager-photos:
+
