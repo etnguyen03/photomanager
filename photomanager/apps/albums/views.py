@@ -50,7 +50,7 @@ def view_album_share(request, album_id: str, share_album_id: str) -> HttpRespons
     return render(request, "albums/view_single_album.html", context=context)
 
 
-class AlbumEditView(UserPassesTestMixin, UpdateView):
+class AlbumEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Album
     fields = ["name", "description", "publicly_accessible", "photos"]
     template_name_suffix = "_update"
@@ -89,9 +89,12 @@ class AlbumListView(ListView):
             )
 
 
-class AlbumDeleteView(DeleteView):
+class AlbumDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Album
     success_url = reverse_lazy("albums:list")
+
+    def test_func(self):
+        return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
 
 
 @login_required
