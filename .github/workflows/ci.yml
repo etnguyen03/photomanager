@@ -51,14 +51,14 @@ jobs:
           pip install pipenv
           pipenv install --dev --deploy
 
-      - name: Run tests
-        run: pipenv run coverage run --source photomanager manage.py test
-
       - name: Migrate database
         run: pipenv run python3 manage.py migrate
 
       - name: Collect static files
         run: pipenv run python3 manage.py collectstatic --noinput
+
+      - name: Run tests
+        run: pipenv run coverage run --source photomanager manage.py test
 
       - name: generate coverage XML report
         run: pipenv run coverage xml
