@@ -36,7 +36,7 @@ class Album(models.Model):
         "are not visible on the front page, however, they are publicly accessible with their link.",
     )
 
-    photos = models.ManyToManyField(Photo)
+    photos = models.ManyToManyField(Photo, blank=True)
 
 
 class AlbumShareLink(models.Model):

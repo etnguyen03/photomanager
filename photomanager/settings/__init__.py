@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 
 from django.urls import reverse_lazy
@@ -182,6 +183,18 @@ SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+TESTING = "test" in sys.argv
+if TESTING:
+    DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
+    DATABASES["default"]["NAME"] = ":memory:"
+
+##########################################
+# These values are defined in secret.py  #
+##########################################
+SOCIAL_AUTH_NEXTCLOUD_KEY = ""
+SOCIAL_AUTH_NEXTCLOUD_SECRET = ""
+NEXTCLOUD_URI = ""  # Hostname of your Nextcloud instance, like "nextcloud.example.com"
 
 try:
     from .secret import *
