@@ -7,9 +7,11 @@
 {% block content %}
     <div class="container-fluid">
         <h2>Albums</h2>
-        <div class="container-fluid pt-3">
-            <a href="{% url "albums:create" %}" class="btn btn-outline-success">Create New Album</a>
-        </div>
+        {% if user.is_authenticated %}
+            <div class="container-fluid pt-3">
+                <a href="{% url "albums:create" %}" class="btn btn-outline-success">Create New Album</a>
+            </div>
+        {% endif %}
         <div class="container-fluid pt-3">
             <table class="table">
                 <thead>
@@ -23,14 +25,16 @@
                         <tr>
                             <td><a href="{% url "albums:display" album.id %}">{{ album.name }}</a></td>
                             <td>
-                                {# Edit album #}
-                                <a href="{% url "albums:edit" album.id %}" class="btn btn-outline-warning" aria-label="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                {# Delete album #}
-                                <a href="{% url "albums:delete" album.id %}" class="btn btn-outline-danger" aria-label="Delete">
-                                    <i class="far fa-trash-alt"></i>
-                                </a>
+                                {% if user.is_authenticated and user == album.owner %}
+                                    {# Edit album #}
+                                    <a href="{% url "albums:edit" album.id %}" class="btn btn-outline-warning" aria-label="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    {# Delete album #}
+                                    <a href="{% url "albums:delete" album.id %}" class="btn btn-outline-danger" aria-label="Delete">
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% empty %}
