@@ -27,6 +27,9 @@ services:
       # This is typically /var/www/nextcloud/data
       # For instance, change the line below to "- /var/www/nextcloud/data:/data
       - photomanager-photos:/data
+      # Change the source of the mount below to a place to store thumbnails.
+      # You don't have to, though.
+      - photomanager-thumbs:/thumbs
     depends_on:
       - redis
       - postgres
@@ -36,4 +39,5 @@ services:
 volumes:
   photomanager-db:
   photomanager-photos:
+  photomanager-thumbs:
 

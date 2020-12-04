@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from exif import Image as exif_Image
 from PIL import Image as PIL_Image
+from PIL import ImageOps
 from timezonefinder import TimezoneFinder
 
 from .models import Photo
@@ -124,6 +125,7 @@ def process_image(photo_id: str) -> None:
 
     # Height and width are a property of every image
     image_pillow = PIL_Image.open(io.BytesIO(image_data))
+    image_pillow = ImageOps.exif_transpose(image_pillow)
     width, height = image_pillow.size
     photo.image_width = width
     photo.image_height = height
@@ -144,5 +146,20 @@ def process_image(photo_id: str) -> None:
     if "flash" in dir(exif_image):
         photo.flash_fired = exif_image.flash.flash_fired
         photo.flash_mode = exif_image.flash.flash_mode
+
+    # We will need to make a thumbnail of this image
+    image_pillow.thumbnail((1024, 1024))
+
+    # Save the thumbnail in a directory
+    # This directory is under settings.IMAGE_THUMBS_DIR, and
+    # we use the first two characters of the photo's UUID as subdirectories
+    # to save images under
+
+    path = os.path.join(settings.IMAGE_THUMBS_DIR, photo_id[0], photo_id[1])
+    Path(os.path.join(settings.IMAGE_THUMBS_DIR, photo_id[0], photo_id[1])).mkdir(
+        parents=True, exist_ok=True
+    )
+
+    image_pillow.save(os.path.join(path, f"{photo_id}.thumb.jpeg"))
 
     photo.save()

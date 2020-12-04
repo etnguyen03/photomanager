@@ -189,6 +189,8 @@ if TESTING:
     DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
     DATABASES["default"]["NAME"] = ":memory:"
 
+IMAGE_THUMBS_DIR = "/thumbs"
+
 ##########################################
 # These values are defined in secret.py  #
 ##########################################

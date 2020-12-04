@@ -16,6 +16,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
+from PIL import Image, ImageOps
 
 from ..albums.models import Album, AlbumShareLink
 from .models import Photo
@@ -56,6 +57,20 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
         "utils/files/read_file.py",
     )
+
+    # If this is a thumbnail we are reading, we will want to use a
+    # different file path than if we are reading the actual file
+
+    if request.GET.get("thumbnail"):
+        file_to_read = os.path.join(
+            settings.IMAGE_THUMBS_DIR,
+            str(photo.id)[0],
+            str(photo.id)[1],
+            f"{str(photo.id)}.thumb.jpeg",
+        )
+    else:
+        file_to_read = photo.file
+
     file_read: dict = json.loads(
         subprocess.run(
             (["sudo"] if os.getuid() != 0 else [])
@@ -64,7 +79,7 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
                 "run",
                 "python3",
                 READ_FILE_PATH,
-                photo.file,
+                file_to_read,
             ],  # sudo required for chroot
             capture_output=True,
             text=True,
@@ -72,9 +87,9 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
     )
 
     return FileResponse(
-        io.BytesIO(base64.b64decode(file_read[photo.file]["data"])),
-        filename=Path(photo.file).name,
-        content_type=file_read[photo.file]["mime"],
+        io.BytesIO(base64.b64decode(file_read[file_to_read]["data"])),
+        filename=Path(file_to_read).name,
+        content_type=file_read[file_to_read]["mime"],
     )
 
 

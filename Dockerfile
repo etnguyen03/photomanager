@@ -9,5 +9,6 @@ RUN pip install pipenv && \
 EXPOSE 8000
 VOLUME /data
 VOLUME /app/photomanager/settings/secret.py
+VOLUME /thumbs
 
 ENTRYPOINT /app/scripts/docker-entrypoint.sh
