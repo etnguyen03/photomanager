@@ -43,6 +43,9 @@ def scan_dir_for_changes(directory: Path, username: str) -> None:
         text=True,
     )
 
+    if contents.returncode != 0:
+        raise Exception()
+
     user = get_user_model().objects.get(username=username)
 
     for file, mime in json.loads(contents.stdout).items():
@@ -84,6 +87,12 @@ def process_image(photo_id: str) -> None:
             text=True,
         ).stdout
     )
+
+    if "error" in file_read.keys():
+        if file_read["error"] == 404:
+            raise Exception()
+        elif file_read["error"] == 500:
+            raise Exception()
 
     assert "image" in file_read[photo.file]["mime"], "Not an image"
 

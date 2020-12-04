@@ -23,10 +23,15 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument("file", help="File to read", type=Path)
 args = argparser.parse_args()
 
-assert os.path.isfile(args.file), "This file does not exist"
-assert (
-    os.geteuid() == 0
-), "This script must be ran as root"  # chroot can only be done as root
+# Exit if the file doesn't exist
+if not os.path.isfile(args.file):
+    print(json.dumps({"error": 404, "message": "This file does not exist"}))
+    exit(1)
+
+# chroot requires root
+if os.geteuid() != 0:
+    print(json.dumps({"error": 500, "message": "This script must be ran as root"}))
+    exit(1)
 
 # This must be created before chrooting
 m = magic.Magic(mime=True)

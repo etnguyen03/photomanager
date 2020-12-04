@@ -9,14 +9,19 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import FileResponse, HttpResponse, HttpResponseForbidden
+from django.http import (
+    FileResponse,
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+    HttpResponseServerError,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from hurry.filesize import size
-from PIL import Image, ImageOps
 
 from ..albums.models import Album, AlbumShareLink
 from .models import Photo
@@ -85,6 +90,12 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
             text=True,
         ).stdout
     )
+
+    if "error" in file_read.keys():
+        if file_read["error"] == 404:
+            return HttpResponseNotFound()
+        elif file_read["error"] == 500:
+            return HttpResponseServerError()
 
     return FileResponse(
         io.BytesIO(base64.b64decode(file_read[file_to_read]["data"])),

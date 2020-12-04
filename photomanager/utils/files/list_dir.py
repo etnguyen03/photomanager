@@ -21,7 +21,9 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument("directory", help="Directory to list/traverse", type=str)
 args = argparser.parse_args()
 
-assert os.path.isdir(args.directory), "This directory does not exist"
+if not os.path.isdir(args.directory):
+    print(json.dumps({"error": 404, "message": "This directory does not exist"}))
+    exit(1)
 
 # This must be created before chrooting
 m = magic.Magic(mime=True)
