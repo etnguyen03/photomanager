@@ -7,7 +7,6 @@ name = "pypi"
 django = "*"
 celery = {extras = ["redis"], version = "*"}
 django-user-sessions = "*"
-tensorflow = "*"
 whitenoise = "*"
 phonenumbers = "*"
 gunicorn = "*"
@@ -25,6 +24,8 @@ ipython = "*"
 django-crispy-forms = "*"
 django-celery-beat = "*"
 django-bootstrap-pagination = "*"
+keras = "*"
+h5py = "<3.0.0" # temporary
 
 [dev-packages]
 black = "==20.8b1"

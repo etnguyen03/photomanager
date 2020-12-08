@@ -13,6 +13,13 @@ SOCIAL_AUTH_NEXTCLOUD_KEY = ""
 SOCIAL_AUTH_NEXTCLOUD_SECRET = ""
 NEXTCLOUD_URI = ""  # Hostname of your Nextcloud instance, like "nextcloud.example.com"
 
+# Whether to enable tagging using Tensorflow/Keras for images
+# or not. Be warned: you should have at least, at the bare minimum
+# 4 GiB of RAM to use automatic tagging. Even with 4 GiB of RAM,
+# you will experience slowdowns.
+ENABLE_TENSORFLOW_TAGGING = True
+
+
 # Configure your database and cache here.
 DATABASES = {
     "default": {

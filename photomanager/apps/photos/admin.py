@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Photo
+from .models import Photo, PhotoTag
 
 
 class PhotoAdmin(admin.ModelAdmin):
@@ -34,6 +34,7 @@ class PhotoAdmin(admin.ModelAdmin):
                     "license",
                     "creation_time",
                     "last_modified_time",
+                    "tags",
                 )
             },
         ),
@@ -70,4 +71,13 @@ class PhotoAdmin(admin.ModelAdmin):
         model = Photo
 
 
+class PhotoTagAdmin(admin.ModelAdmin):
+    class Meta:
+        model = PhotoTag
+
+    readonly_fields = ["create_time"]
+    fields = ["tag", "creator", "create_time"]
+
+
 admin.site.register(Photo, PhotoAdmin)
+admin.site.register(PhotoTag, PhotoTagAdmin)

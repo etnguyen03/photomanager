@@ -1,22 +1,55 @@
 import base64
 import io
 import json
+import multiprocessing
 import os
 import subprocess
+import time
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
+import billiard
 import magic
 import pytz
 from celery import shared_task
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from exif import Image as exif_Image
 from PIL import Image as PIL_Image
 from PIL import ImageOps
 from timezonefinder import TimezoneFinder
 
-from .models import Photo
+if settings.ENABLE_TENSORFLOW_TAGGING:
+    import numpy as np
+    from keras.applications import ResNet50V2
+    from keras.applications.imagenet_utils import decode_predictions, preprocess_input
+    from keras.preprocessing import image as keras_image
+
+from .models import Photo, PhotoTag
+
+LOCK_EXPIRE = 60 * 10
+
+
+# https://docs.celeryproject.org/en/latest/tutorials/task-cookbook.html
+@contextmanager
+def redis_lock(lock_id):
+    timeout_at = time.monotonic() + LOCK_EXPIRE - 3
+    # cache.add fails if the key already exists
+    # Second value is arbitrary
+    status = cache.add(lock_id, "lock", timeout=LOCK_EXPIRE)
+    try:
+        yield status
+    finally:
+        # memcache delete is very slow, but we have to use it to take
+        # advantage of using add() for atomic locking
+        if time.monotonic() < timeout_at and status:
+            # don't release the lock if we exceeded the timeout
+            # to lessen the chance of releasing an expired lock
+            # owned by someone else
+            # also don't release the lock if we didn't acquire it
+            cache.delete(lock_id)
 
 
 @shared_task
@@ -155,6 +188,51 @@ def process_image(photo_id: str) -> None:
     if "flash" in dir(exif_image):
         photo.flash_fired = exif_image.flash.flash_fired
         photo.flash_mode = exif_image.flash.flash_mode
+
+    if settings.ENABLE_TENSORFLOW_TAGGING:
+        # We only want to run one tagging operation at a time since it is memory intensive
+        with redis_lock("tensorflow-tag"):
+            # We define get_predictions to allow for a timeout
+            # The queue is created to grab the return value
+            queue = multiprocessing.Queue()
+
+            def get_predictions(image_pillow: PIL_Image):
+                """
+                Helper function to determine tags of an image
+                :param image_pillow: Pillow.Image
+                :return: None (results appended to queue)
+                """
+                model = ResNet50V2(weights="imagenet")
+                image_tags = keras_image.img_to_array(
+                    image_pillow.resize((224, 224), PIL_Image.NEAREST)
+                )
+                image_tags = np.expand_dims(image_tags, axis=0)
+                image_tags = preprocess_input(image_tags)
+                predictions = model.predict(image_tags)
+                queue.put(decode_predictions(predictions)[0])
+
+            process = billiard.context.Process(
+                target=get_predictions, kwargs={"image_pillow": image_pillow}
+            )
+            process.daemon = True
+            process.start()
+
+            process.join(10)  # 10 second (arbitrary) timeout
+            if process.is_alive():
+                process.terminate()
+                raise TimeoutError
+
+            decoded_predictions = queue.get()
+
+            for prediction in decoded_predictions:
+                if (
+                    prediction[2] > 0.20
+                ):  # If score greater than 0.20 (chosen arbitrarily)
+                    tag = PhotoTag.objects.get_or_create(tag=prediction[1])
+                    if tag[1]:  # If an object was created
+                        tag[0].is_auto_generated = True
+                        tag[0].save()
+                    photo.tags.add(tag[0])
 
     # We will need to make a thumbnail of this image
     image_pillow.thumbnail((1024, 1024))
