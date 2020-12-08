@@ -26,6 +26,7 @@ django-celery-beat = "*"
 django-bootstrap-pagination = "*"
 keras = "*"
 h5py = "<3.0.0" # temporary
+tensorflow = "*"
 
 [dev-packages]
 black = "==20.8b1"
