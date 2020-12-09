@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="photo",
             name="tags",
-            field=models.ManyToManyField(blank=True, to="photos.PhotoTag"),
+            field=models.ManyToManyField(blank=True, to="tags.PhotoTag"),
         ),
     ]

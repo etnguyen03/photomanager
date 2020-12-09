@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "photomanager.apps.users",
     "photomanager.apps.photos",
     "photomanager.apps.albums",
+    "photomanager.apps.tags",
 ]
 
 MIDDLEWARE = [

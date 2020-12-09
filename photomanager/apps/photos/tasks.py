@@ -27,7 +27,8 @@ if settings.ENABLE_TENSORFLOW_TAGGING:
     from keras.applications.imagenet_utils import decode_predictions, preprocess_input
     from keras.preprocessing import image as keras_image
 
-from .models import Photo, PhotoTag
+from ..tags.models import PhotoTag
+from .models import Photo
 
 LOCK_EXPIRE = 60 * 10
 
