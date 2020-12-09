@@ -23,9 +23,12 @@ from timezonefinder import TimezoneFinder
 
 if settings.ENABLE_TENSORFLOW_TAGGING:
     import numpy as np
-    from keras.applications import ResNet50V2
-    from keras.applications.imagenet_utils import decode_predictions, preprocess_input
-    from keras.preprocessing import image as keras_image
+    from tensorflow.keras.applications import NASNetLarge
+    from tensorflow.keras.applications.imagenet_utils import (
+        decode_predictions,
+        preprocess_input,
+    )
+    from tensorflow.keras.preprocessing import image as keras_image
 
 from ..tags.models import PhotoTag
 from .models import Photo
@@ -83,10 +86,9 @@ def scan_dir_for_changes(directory: Path, username: str) -> None:
     user = get_user_model().objects.get(username=username)
 
     for file, mime in json.loads(contents.stdout).items():
-        # file[0] is the file name, file[1] is the mime type
         if "image" in mime:
             # file must be prepended with user.subdirectory
-            actual_path = f"{str(user.subdirectory)}{file}"
+            actual_path = os.path.join("/data/", str(user.subdirectory), file)
             photo = Photo.objects.get_or_create(file=actual_path, user=user)
             if photo[1]:  # If this was just created by get_or_create
                 process_image.delay(photo[0].id)
@@ -107,6 +109,8 @@ def process_image(photo_id: str) -> None:
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
         "utils/files/read_file.py",
     )
+    # TODO: find a better way to do this
+    file_path = "/data/" + str(photo.file).lstrip("/")
     file_read: dict = json.loads(
         subprocess.run(
             [
@@ -115,7 +119,7 @@ def process_image(photo_id: str) -> None:
                 "run",
                 "python3",
                 READ_FILE_PATH,
-                photo.file,
+                file_path,
             ],  # sudo required for chroot
             capture_output=True,
             text=True,
@@ -128,9 +132,9 @@ def process_image(photo_id: str) -> None:
         elif file_read["error"] == 500:
             raise Exception()
 
-    assert "image" in file_read[photo.file]["mime"], "Not an image"
+    assert "image" in file_read[file_path]["mime"], "Not an image"
 
-    image_data: bytes = base64.b64decode(file_read[photo.file]["data"])
+    image_data: bytes = base64.b64decode(file_read[file_path]["data"])
 
     m = magic.Magic(mime=True)
     assert "image" in m.from_buffer(image_data), "Not an image file"
@@ -172,7 +176,7 @@ def process_image(photo_id: str) -> None:
     width, height = image_pillow.size
     photo.image_width = width
     photo.image_height = height
-    photo.image_size = file_read[photo.file]["size"]
+    photo.image_size = file_read[file_path]["size"]
 
     if "make" in dir(exif_image):
         photo.camera_make = exif_image.make
@@ -203,9 +207,9 @@ def process_image(photo_id: str) -> None:
                 :param image_pillow: Pillow.Image
                 :return: None (results appended to queue)
                 """
-                model = ResNet50V2(weights="imagenet")
+                model = NASNetLarge(weights="imagenet")
                 image_tags = keras_image.img_to_array(
-                    image_pillow.resize((224, 224), PIL_Image.NEAREST)
+                    image_pillow.resize((331, 331), PIL_Image.NEAREST)
                 )
                 image_tags = np.expand_dims(image_tags, axis=0)
                 image_tags = preprocess_input(image_tags)
@@ -218,7 +222,7 @@ def process_image(photo_id: str) -> None:
             process.daemon = True
             process.start()
 
-            process.join(10)  # 10 second (arbitrary) timeout
+            process.join(60)  # 60 second (arbitrary) timeout
             if process.is_alive():
                 process.terminate()
                 raise TimeoutError

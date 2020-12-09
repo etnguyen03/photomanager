@@ -24,8 +24,6 @@ ipython = "*"
 django-crispy-forms = "*"
 django-celery-beat = "*"
 django-bootstrap-pagination = "*"
-keras = "*"
-h5py = "<3.0.0" # temporary
 tensorflow = "*"
 
 [dev-packages]
