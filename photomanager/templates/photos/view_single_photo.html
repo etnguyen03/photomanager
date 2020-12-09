@@ -34,6 +34,7 @@
             <div class="col">
                 <table class="table table-borderless table-sm">
                     <tbody>
+                        {# Description #}
                         <tr>
                             <td><i class="far fa-sticky-note" aria-label="Description of image" aria-details="#details-description"></i></td>
                             <td>
@@ -46,6 +47,20 @@
                                 </p>
                             </td>
                         </tr>
+                        {# Tags #}
+                        <tr>
+                            <td><i class="fas fa-tags" aria-label="Tags" aria-details="#details-tags"></i></td>
+                            <td>
+                                <p id="details-tags">
+                                    {% for tag in photo.tags.all %}
+                                        <a href="#" class="badge badge-primary">{{ tag }}</a>
+                                    {% empty %}
+                                        There are no tags for this image.
+                                    {% endfor %}
+                                </p>
+                            </td>
+                        </tr>
+                        {# Albums #}
                         <tr>
                             <td><i class="fas fa-images" aria-label="Albums this image is a part of" aria-details="#details-albums"></i></td>
                             <td>
@@ -68,6 +83,7 @@
                                 </div>
                             </td>
                         </tr>
+                        {# Public accessibility #}
                         <tr>
                             <td><i class="fas fa-user-friends" aria-label="Is this image publicly accessible?" aria-details="#details-public"></i></td>
                             <td>
@@ -81,6 +97,7 @@
                             </td>
                         </tr>
                         {% if user == photo.user %}
+                        {# Edit link #}
                         <tr>
                             <td><i class="fas fa-pencil-alt" aria-label="Edit links" aria-details="#edit-links"></i></td>
                             <td>
@@ -90,6 +107,7 @@
                             </td>
                         </tr>
                         {% endif %}
+                        {# Uploaded by #}
                         <tr>
                             <td><i class="fas fa-user-alt" aria-label="Owner of picture" aria-details="#details-owner"></i></td>
                             <td>
@@ -98,6 +116,7 @@
                                 </p>
                             </td>
                         </tr>
+                        {# License info #}
                         <tr>
                             <td><i class="far fa-copyright" aria-label="Copyright status" aria-details="#details-copyright"></i></td>
                             <td>
