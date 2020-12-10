@@ -74,7 +74,8 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
             f"{str(photo.id)}.thumb.jpeg",
         )
     else:
-        file_to_read = photo.file
+        # TODO: find a better way to do this
+        file_to_read = "/data/" + str(photo.file).lstrip("/")
 
     file_read: dict = json.loads(
         subprocess.run(
