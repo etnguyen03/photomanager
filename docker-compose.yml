@@ -9,7 +9,7 @@ services:
       - "6379"
 
   postgres:
-    image: postgres:13
+    image: postgres:13-alpine
     volumes:
       - photomanager-db:/var/lib/postgresql/data
     environment:
