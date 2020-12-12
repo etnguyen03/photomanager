@@ -21,11 +21,13 @@ from django.urls import include, path
 from photomanager.apps.albums import urls as albums_urls
 from photomanager.apps.photos import urls as photos_urls
 from photomanager.apps.photos import views as photos_views
+from photomanager.apps.tags import urls as tags_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("photos/", include(photos_urls)),
     path("albums/", include(albums_urls)),
+    path("tags/", include(tags_urls)),
     path("", photos_views.IndexView.as_view(), name="index"),
     path("logout", LogoutView.as_view(), name="logout"),
     url("", include("social_django.urls", namespace="social")),

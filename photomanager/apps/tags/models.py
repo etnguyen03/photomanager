@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from photomanager.apps.users.models import User
@@ -25,3 +26,11 @@ class PhotoTag(models.Model):
 
     def __str__(self):
         return self.human_readable_name
+
+    def clean(self, *args, **kwargs):
+        if self.tag == "create":
+            raise ValidationError(
+                {"tag": "create is a reserved tag name and cannot be used"}
+            )
+
+        super(PhotoTag, self).clean(*args, **kwargs)

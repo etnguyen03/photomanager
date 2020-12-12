@@ -53,7 +53,7 @@
                             <td>
                                 <p id="details-tags">
                                     {% for tag in photo.tags.all %}
-                                        <a href="#" class="badge badge-primary">{{ tag }}</a>
+                                        <a href="{% url "tags:display" tag.tag %}" class="badge badge-primary">{{ tag }}</a>
                                     {% empty %}
                                         There are no tags for this image.
                                     {% endfor %}

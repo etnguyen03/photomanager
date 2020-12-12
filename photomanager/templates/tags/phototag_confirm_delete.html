@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block titleprefix %}Confirm Delete Tag{% endblock %}
+
+{% block content %}
+    <h2>Confirm Tag Deletion</h2>
+    {% if object.is_auto_generated %}
+        <p>This tag cannot be deleted because it was automatically generated.</p>
+    {% else %}
+        <form method="post">
+            <p>
+                Are you sure you want to delete the tag <a href="{% url "tags:display" object.tag %}">{{ object }}</a>,
+                consisting of {{ object.photo_set.all.count }} photo{{ object.photo_set.all.count|pluralize }}?
+            </p>
+            <p>The photos will remain intact.</p>
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Yes, delete">
+        </form>
+    {% endif %}
+{% endblock %}
