@@ -4,11 +4,12 @@ COPY . /app
 WORKDIR /app
 
 RUN pip install pipenv && \
-    pipenv install --deploy --system
+    pipenv install --deploy --system && \
+    chmod +x /app/scripts/docker-entrypoint.sh
 
 EXPOSE 8000
 VOLUME /data
 VOLUME /app/photomanager/settings/secret.py
 VOLUME /thumbs
 
-ENTRYPOINT /app/scripts/docker-entrypoint.sh
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
