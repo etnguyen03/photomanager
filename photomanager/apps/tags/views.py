@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.functions import Lower
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
@@ -48,5 +49,14 @@ class DetailTagView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailTagView, self).get_context_data(**kwargs)
-        context["photos"] = self.object.photo_set.all()
+
+        if self.request.user.is_authenticated:
+            context["photos"] = self.object.photo_set.filter(user=self.request.user)
+        else:
+            if self.object.photo_set.filter(publicly_accessible=True).count() == 0:
+                raise Http404(
+                    "No publicly accessible images exist for this tag. Are you logged in?"
+                )
+            context["photos"] = self.object.photo_set.filter(publicly_accessible=True)
+
         return context
