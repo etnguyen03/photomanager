@@ -3,8 +3,8 @@ import uuid
 from django.conf import settings
 from django.urls import reverse_lazy
 
-from ...test.photomanger_test import PhotomanagerTestCase
-from .models import Album, AlbumShareLink
+from photomanager.apps.albums.models import Album, AlbumShareLink
+from photomanager.test.photomanger_test import PhotomanagerTestCase
 
 
 class AlbumsTestCase(PhotomanagerTestCase):
