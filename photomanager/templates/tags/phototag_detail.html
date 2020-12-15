@@ -8,15 +8,6 @@
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-4"><a href="{% url "tags:display" object.tag %}">{{ object }}</a></h1>
-            {% if user.is_authenticated and not object.is_auto_generated and object.creator == user %}
-                <div class="row pt-1">
-                    <div class="col">
-                        <a href="{% url "tags:delete" object.tag %}" class="btn btn-outline-danger">
-                            <i class="far fa-trash-alt" aria-label="Delete"></i>
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
         </div>
     </div>
     <div class="container-fluid">

@@ -50,16 +50,3 @@ class DetailTagView(DetailView):
         context = super(DetailTagView, self).get_context_data(**kwargs)
         context["photos"] = self.object.photo_set.all()
         return context
-
-
-class DeleteTagView(
-    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView
-):
-    model = PhotoTag
-    success_url = reverse_lazy("tags:list")
-
-    success_message = "Tag deleted successfully."
-
-    def test_func(self):
-        object = PhotoTag.objects.get(tag=self.kwargs["pk"])
-        return self.request.user == object.creator and not object.is_auto_generated

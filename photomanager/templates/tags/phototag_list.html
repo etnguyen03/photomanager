@@ -17,26 +17,16 @@
                 <thead>
                     <tr>
                         <th scope="col">Tag</th>
-                        <th scope="col"></th>   {# Contains buttons, but we don't want a header #}
                     </tr>
                 </thead>
                 <tbody>
                     {% for tag in object_list %}
                         <tr>
                             <td><a href="{% url "tags:display" tag.tag %}">{{ tag.human_readable_name }}</a></td>
-                            <td>
-                                {% if user.is_authenticated and user == tag.creator %}
-                                    {# Delete tag #}
-                                    <a href="{% url "tags:delete" tag.tag %}" class="btn btn-outline-danger" aria-label="Delete">
-                                        <i class="far fa-trash-alt"></i>
-                                    </a>
-                                {% endif %}
-                            </td>
                         </tr>
                     {% empty %}
                         <tr>
                             <td>There are no tags to display.</td>
-                            <td></td>
                         </tr>
                     {% endfor %}
                 </tbody>
