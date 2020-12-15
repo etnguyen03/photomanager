@@ -38,6 +38,12 @@ jobs:
       matrix:
         python-version: [ 3.8 ]
 
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     steps:
       - uses: actions/checkout@v2
 
@@ -50,6 +56,11 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev --deploy
+
+      - name: make /data directory
+        run: |
+          sudo mkdir -p /data
+          sudo chown $USER:$(id -gn $USER) /data
 
       - name: Migrate database
         run: pipenv run python3 manage.py migrate
@@ -95,10 +106,11 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: false
           platforms: linux/amd64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+          tags: |
+            localhost:5000/photomanager/photomanager:latest
 
   push:
     needs:
