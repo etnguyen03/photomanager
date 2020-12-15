@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "channels",
     "bootstrap_pagination",
     "crispy_forms",
     # Celery
@@ -86,8 +87,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "photomanager.wsgi.application"
-
+# WSGI_APPLICATION = "photomanager.wsgi.application"
+ASGI_APPLICATION = "photomanager.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
