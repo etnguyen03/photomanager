@@ -24,7 +24,7 @@ ipython = "*"
 django-crispy-forms = "*"
 django-celery-beat = "*"
 django-bootstrap-pagination = "*"
-tensorflow = "*"
+tensorflow = "<2.4" # Temporary - "FMA instructions" unavailable in VBox
 daphne = "*"
 channels = "*"
 
