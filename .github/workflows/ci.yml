@@ -38,12 +38,6 @@ jobs:
       matrix:
         python-version: [ 3.8 ]
 
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
-
     steps:
       - uses: actions/checkout@v2
 
@@ -109,8 +103,6 @@ jobs:
           platforms: linux/amd64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          tags: |
-            localhost:5000/photomanager/photomanager:latest
 
   push:
     needs:
