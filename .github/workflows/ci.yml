@@ -28,10 +28,6 @@ jobs:
         run: |
           pipenv run black --check .
 
-      - name: check dependencies against PyUp and PEP 508
-        run: |
-          pipenv check
-
   test:
     runs-on: ubuntu-latest
     strategy:
