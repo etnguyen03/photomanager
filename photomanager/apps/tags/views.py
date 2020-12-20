@@ -1,9 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView
 
 from .models import PhotoTag
 
@@ -50,13 +50,17 @@ class DetailTagView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(DetailTagView, self).get_context_data(**kwargs)
 
+        # If the user is authenticated, they can see their photos that are tagged with this tag
         if self.request.user.is_authenticated:
             context["photos"] = self.object.photo_set.filter(user=self.request.user)
         else:
+            # If there are no publicly accessible images for this tag, we 404
             if self.object.photo_set.filter(publicly_accessible=True).count() == 0:
                 raise Http404(
                     "No publicly accessible images exist for this tag. Are you logged in?"
                 )
+
+            # Otherwise, we show the publicly accessible images
             context["photos"] = self.object.photo_set.filter(publicly_accessible=True)
 
         return context

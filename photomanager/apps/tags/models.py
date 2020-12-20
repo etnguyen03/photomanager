@@ -11,6 +11,7 @@ class PhotoTag(models.Model):
     def human_readable_name(self) -> str:
         """
         Return a human readable name based off the slug.
+
         :return: A string
         """
         return self.tag.replace("_", " ")

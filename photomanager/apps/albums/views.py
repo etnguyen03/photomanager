@@ -36,6 +36,14 @@ def view_album(request, album_id: str) -> HttpResponse:
 
 
 def view_album_share(request, album_id: str, share_album_id: str) -> HttpResponse:
+    """
+    View for viewing a (private) album, but with a share link
+
+    :param request: Request object
+    :param album_id: Album ID (UUID)
+    :param share_album_id: Share link ID (UUID)
+    :return: HttpResponse or 404 if share link invalid
+    """
     album_share_link = get_object_or_404(
         AlbumShareLink, id=share_album_id, album__id=album_id
     )

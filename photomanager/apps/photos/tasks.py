@@ -36,9 +36,14 @@ from .models import Photo
 LOCK_EXPIRE = 60 * 10
 
 
-# https://docs.celeryproject.org/en/latest/tutorials/task-cookbook.html
 @contextmanager
 def redis_lock(lock_id):
+    """
+    Helper function to manage locks in the Redis database
+    From https://docs.celeryproject.org/en/latest/tutorials/task-cookbook.html
+
+    :param lock_id: An ID for the lock
+    """
     timeout_at = time.monotonic() + LOCK_EXPIRE - 3
     # cache.add fails if the key already exists
     # Second value is arbitrary
@@ -150,19 +155,18 @@ def process_image(photo_id: str) -> None:
         tf = TimezoneFinder()
 
         if "gps_longitude" in dir(exif_image) and "gps_latitude" in dir(exif_image):
-            deg, minutes, seconds = exif_image.gps_longitude
-            direction = exif_image.gps_longitude_ref
-            # https://stackoverflow.com/a/54294962
-            longitude = (
-                float(deg) + float(minutes) / 60 + float(seconds) / (60 * 60)
-            ) * (-1 if direction in ["W", "S"] else 1)
-
-            deg, minutes, seconds = exif_image.gps_latitude
-            direction = exif_image.gps_latitude_ref
-            latitude = (
-                float(deg) + float(minutes) / 60 + float(seconds) / (60 * 60)
-            ) * (-1 if direction in ["W", "S"] else 1)
-            tz = tf.timezone_at(lng=longitude, lat=latitude)
+            gps_point = []
+            for pt, direction in [
+                (exif_image.gps_latitude, exif_image.gps_latitude_ref),
+                (exif_image.gps_longitude, exif_image.gps_longitude_ref),
+            ]:
+                deg, minutes, seconds = pt
+                # https://stackoverflow.com/a/54294962
+                point = (
+                    float(deg) + float(minutes) / 60 + float(seconds) / (60 * 60)
+                ) * (-1 if direction in ["W", "S"] else 1)
+                gps_point.append(point)
+            tz = tf.timezone_at(lat=gps_point[0], lng=gps_point[1])
         else:
             tz = settings.TIME_ZONE
 
@@ -201,15 +205,15 @@ def process_image(photo_id: str) -> None:
             # The queue is created to grab the return value
             queue = multiprocessing.Queue()
 
-            def get_predictions(image_pillow: PIL_Image):
+            def get_predictions(img_pillow: PIL_Image):
                 """
                 Helper function to determine tags of an image
-                :param image_pillow: Pillow.Image
+                :param img_pillow: Pillow.Image
                 :return: None (results appended to queue)
                 """
                 model = NASNetLarge(weights="imagenet")
                 image_tags = keras_image.img_to_array(
-                    image_pillow.resize((331, 331), PIL_Image.NEAREST)
+                    img_pillow.resize((331, 331), PIL_Image.NEAREST)
                 )
                 image_tags = np.expand_dims(image_tags, axis=0)
                 image_tags = preprocess_input(image_tags)

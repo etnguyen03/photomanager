@@ -60,6 +60,7 @@ class Photo(models.Model):
     def aperture_value_f_stop(self) -> float:
         """
         Returns the aperture value as an f-stop.
+
         :return: a float.
         """
         # Source: http://www.fifi.org/doc/jhead/exif-e.html
@@ -73,6 +74,7 @@ class Photo(models.Model):
     def shutter_speed_seconds(self) -> Fraction:
         """
         Returns the shutter speed value as a fraction of a second.
+
         :return: a fraction of a second
         """
         return Fraction(1, int(round(2 ** self.shutter_speed_value, 0)))
