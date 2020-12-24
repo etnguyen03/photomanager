@@ -56,11 +56,11 @@
         },
         "autobahn": {
             "hashes": [
-                "sha256:491238c31f78721eaa9d0593909ab455a4ea68127aadd76ecf67185143f5f298",
-                "sha256:72b68a1ce1e10e3cbcc3b280aae86d5b2e7a1f409febab1ab91a8a3274113f6e"
+                "sha256:410a93e0e29882c8b5d5ab05d220b07609b886ef5f23c0b8d39153254ffd6895",
+                "sha256:52ee4236ff9a1fcbbd9500439dcf3284284b37f8a6b31ecc8a36e00cf9f95049"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==20.12.2"
+            "version": "==20.12.3"
         },
         "automat": {
             "hashes": [
@@ -780,10 +780,11 @@
         },
         "pyjwt": {
             "hashes": [
-                "sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e",
-                "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"
+                "sha256:5c2ff2eb27d7e342dfc3cafcc16412781f06db2690fbef81922b0172598f085b",
+                "sha256:7a2b271c6dac2fda9e0c33d176c4253faba2c6c6b3a99c7f28a32c3c97522779"
             ],
-            "version": "==1.7.1"
+            "markers": "python_version >= '3.6'",
+            "version": "==2.0.0"
         },
         "pyopenssl": {
             "hashes": [
@@ -946,11 +947,12 @@
         },
         "timezonefinder": {
             "hashes": [
-                "sha256:81cf559c6a1da58f12511e2d835fde4daa4c467ddbc43463fc2f0a2015b6ca2a",
-                "sha256:99b0cea5abf304e8738ecf5cceae0c0e5182534843f19638a26a220fa212fbad"
+                "sha256:57b88f11c4577fc7e50f826588bfb6127055123fba54227e1a452be89fd5372b",
+                "sha256:5b9ea3933840cdb43b2eccb010359cacda9a9ad3c96894b41ce531e31db60390",
+                "sha256:d8a05c207aab92d6f01b426dc4bcef08118ec31cf4504bd4011c7551f3160694"
             ],
             "index": "pypi",
-            "version": "==4.5.0"
+            "version": "==5.0.0"
         },
         "traitlets": {
             "hashes": [
