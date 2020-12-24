@@ -221,7 +221,7 @@ def process_image(photo_id: str) -> None:
                 queue.put(decode_predictions(predictions)[0])
 
             process = billiard.context.Process(
-                target=get_predictions, kwargs={"image_pillow": image_pillow}
+                target=get_predictions, kwargs={"img_pillow": image_pillow}
             )
             process.daemon = True
             process.start()
