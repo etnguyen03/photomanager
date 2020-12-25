@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     # Celery
     "django_celery_results",
+    "django_celery_beat",
     # Social auth
     "social_django",
     # photomanager apps
@@ -152,6 +153,7 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "default"
 CELERY_BROKER_URL = "redis://localhost:6379/1"
 CELERY_TIMEZONE = "America/New_York"  # Change maybe?
+CELERY_TASK_RESULT_EXPIRES = 86400  # Clear after one day
 
 CACHES = {
     "default": {
