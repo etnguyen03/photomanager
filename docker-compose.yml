@@ -59,6 +59,25 @@ services:
       - redis
       - postgres
 
+  photomanager-celerybeat:
+    #image: etnguyen03/photomanager
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celerybeat
+    volumes:
+      - ./photomanager/settings/secret.py:/app/photomanager/settings/secret.py
+      # Change the source of the mount below to your Nextcloud data folder.
+      # This is typically /var/www/nextcloud/data
+      # For instance, change the line below to "- /var/www/nextcloud/data:/data
+      - photomanager-photos:/data
+      # Change the source of the mount below to a place to store thumbnails.
+      # You don't have to, though.
+      - photomanager-thumbs:/thumbs
+    depends_on:
+      - redis
+      - postgres
+
 volumes:
   photomanager-db:
   photomanager-photos:
