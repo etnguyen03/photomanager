@@ -27,6 +27,7 @@ django-bootstrap-pagination = "*"
 tensorflow = "<2.4" # Temporary - "FMA instructions" unavailable in VBox
 daphne = "*"
 channels = "*"
+face-recognition = "*"
 
 [dev-packages]
 black = "==20.8b1"
