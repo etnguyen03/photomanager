@@ -100,6 +100,18 @@ def scan_dir_for_changes(directory: Path, username: str) -> None:
 
 
 @shared_task
+def scan_all_dirs_for_changes() -> None:
+    """
+    Scan all directories held by all users for changes.
+    Queues new tasks for any new files found.
+
+    :return: None
+    """
+    for user in get_user_model().objects.all():
+        scan_dir_for_changes.delay(user.subdirectory, user.username)
+
+
+@shared_task
 def process_image(photo_id: str) -> None:
     """
     Process an image.

@@ -156,6 +156,13 @@ CELERY_BROKER_URL = "redis://localhost:6379/1"
 CELERY_TIMEZONE = "America/New_York"  # Change maybe?
 CELERY_TASK_RESULT_EXPIRES = 86400  # Clear after one day
 
+CELERY_BEAT_SCHEDULE = {
+    "rescan-directory": {
+        "task": "photomanager.apps.photos.tasks.scan_all_dirs_for_changes",
+        "schedule": 60,
+    }
+}
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
