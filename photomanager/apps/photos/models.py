@@ -4,6 +4,7 @@ from math import sqrt
 
 from django.db import models
 
+from photomanager.apps.faces.models import Face
 from photomanager.apps.tags.models import PhotoTag
 from photomanager.apps.users.models import User
 
@@ -135,3 +136,6 @@ class Photo(models.Model):
 
     # Tags; both automatically generated tags and user modifiable
     tags = models.ManyToManyField(PhotoTag, blank=True)
+
+    # Faces; both automatically generated and user modifiable
+    faces = models.ManyToManyField(Face, blank=True)
