@@ -12,6 +12,9 @@ sudo apt-get -y install python3-pip python3-dev
 # Install pipenv
 sudo pip3 install pipenv
 
+# face-recognition requires cmake
+apt-get -y install cmake
+
 # Install dependencies and create venv
 pipenv install --dev --deploy
 
@@ -29,4 +32,3 @@ sed -i 's/^#\(bind 127.0.0.1 ::1\)$/\1/' /etc/redis/redis.conf
 sed -i 's/^\(protected-mode\) no$/\1 yes/' /etc/redis/redis.conf
 systemctl restart redis-server
 systemctl enable redis-server
-
