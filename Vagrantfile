@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     vb.name = "photomanager-vagrant"
-    vb.memory = 4096
+    vb.memory = 6144
   end
 
   # Sync this repo to /home/vagrant/photomanager
