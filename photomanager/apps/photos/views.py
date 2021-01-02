@@ -234,7 +234,7 @@ def view_single_photo_album_share(request, image_id, album_share_id):
 
 class PhotoUpdate(UserPassesTestMixin, UpdateView):
     model = Photo
-    fields = ["description", "tags", "license", "publicly_accessible"]
+    fields = ["description", "tags", "faces", "license", "publicly_accessible"]
     template_name = "photos/photo_update.html"
 
     def test_func(self):
