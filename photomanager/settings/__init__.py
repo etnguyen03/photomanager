@@ -211,6 +211,7 @@ SOCIAL_AUTH_NEXTCLOUD_SECRET = ""
 NEXTCLOUD_URI = ""  # Hostname of your Nextcloud instance, like "nextcloud.example.com"
 
 ENABLE_TENSORFLOW_TAGGING = True
+ENABLE_FACE_RECOGNITION = True
 
 try:
     from .secret import *

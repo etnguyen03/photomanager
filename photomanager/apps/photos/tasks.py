@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 import billiard
+import face_recognition
 import magic
 import pytz
 from celery import shared_task
@@ -20,6 +21,8 @@ from exif import Image as exif_Image
 from PIL import Image as PIL_Image
 from PIL import ImageOps
 from timezonefinder import TimezoneFinder
+
+from ..faces.models import Face
 
 if settings.ENABLE_TENSORFLOW_TAGGING:
     import numpy as np
@@ -254,6 +257,38 @@ def process_image(photo_id: str) -> None:
                         tag[0].is_auto_generated = True
                         tag[0].save()
                     photo.tags.add(tag[0])
+
+    if settings.ENABLE_FACE_RECOGNITION:
+        # We can only do one at a time to prevent duplicates
+        with redis_lock("face-recognition"):
+            # We now need to convert the image to a NumPy array in order to do anything with it
+            np_array = np.array(image_pillow)
+
+            # Now, get the face encodings for the face(s) in this image
+            encodings = face_recognition.face_encodings(np_array, model="cnn")
+
+            # Loop over all the encodings detected
+
+            # First, we have to query the database
+            faces = list(Face.objects.all())
+            faces_data = [json.loads(s.face_data) for s in faces]
+            for encoding in encodings:
+                # Now, we compare to the list of faces in the database
+                # TODO: This needs to be more efficient
+                compare = face_recognition.compare_faces(faces_data, encoding)
+
+                # If a face already exists, then it should have a True value in that array,
+                # corresponding to the faces list
+                # TODO: Deduplicate somehow?
+                if any(compare):
+                    # Find the indices that are True, and take the same index in the faces list
+                    for i in range(len(compare)):
+                        if compare[i]:
+                            photo.faces.add(faces[i])
+
+                # If no face exists, then add one
+                face = Face.objects.create(face_data=json.dumps(encoding.tolist()))
+                photo.faces.add(face)
 
     # We will need to make a thumbnail of this image
     image_pillow.thumbnail((1024, 1024))

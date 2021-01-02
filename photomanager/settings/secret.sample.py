@@ -19,6 +19,9 @@ NEXTCLOUD_URI = ""  # Hostname of your Nextcloud instance, like "nextcloud.examp
 # you will experience slowdowns.
 ENABLE_TENSORFLOW_TAGGING = True
 
+# Same for face recognition.
+ENABLE_FACE_RECOGNITION = True
+
 
 # Configure your database and cache here.
 DATABASES = {
