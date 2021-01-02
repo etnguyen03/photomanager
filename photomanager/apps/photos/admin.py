@@ -35,6 +35,7 @@ class PhotoAdmin(admin.ModelAdmin):
                     "creation_time",
                     "last_modified_time",
                     "tags",
+                    "faces",
                 )
             },
         ),
