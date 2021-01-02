@@ -14,21 +14,26 @@ Google Photos goes non-free (currently set for July 2021) but
 that might be missed.
 
 `photomanager` is an effort to clone as many features of Google Photos as possible
-in a high-quality manner while still remaining free, open-source software accessible to all. 
+in a high-quality manner, while still remaining free, open-source software
+accessible to all. 
 
 The goals include:
 
 * Per-user authentication
 * Nextcloud integration, perhaps with a simple read-only mount
   * Easier to auto-upload - app already exists
-* [Tensorflow NASNet](https://www.tensorflow.org/api_docs/python/tf/keras/applications/NASNetMobile)
-for autotagging images
-* [`facenet-pytorch`](https://github.com/timesler/facenet-pytorch) for face recognition
+* [Tensorflow NASNet](https://www.tensorflow.org/api_docs/python/tf/keras/applications/NASNetMobile) 
+  for autotagging images
+* [`face-recognition`](https://github.com/ageitgey/face_recognition) for
+  face recognition
+
+For further information on deployment and development, see the Wiki
+([here](https://github.com/etnguyen03/photomanager/wiki)).
 
 ---
 
-This project is definitely not endorsed by Google, Alphabet Inc., or anyone else affiliated
-with Google Photos.
+This project is definitely not endorsed by Google, Alphabet Inc.,
+or anyone else affiliated with Google Photos.
 
 Copyright (c) 2020 Ethan Nguyen and contributors. All rights reserved.
 
