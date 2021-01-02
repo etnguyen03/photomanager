@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load bootstrap_pagination %}
+
+{% block titleprefix %}Faces{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h2>Faces</h2>
+        <div class="container-fluid pt-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Face</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for face in object_list %}
+                        <tr>
+                            <td><a href="{% url "faces:display" face.id %}">{{ face }}</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td>There are no faces to display.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row py-3">
+            <div class="col justify-content-center">
+                {% bootstrap_paginate page_obj range=10 extra_pagination_classes="justify-content-center" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

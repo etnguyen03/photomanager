@@ -46,9 +46,9 @@ class Face(models.Model):
 
     @property
     def name(self):
-        if self.creator is User:  # i.e. not None
-            if self.creator.get_full_name().strip() != "":
-                return self.creator.get_full_name().strip()
+        if self.user is User:  # i.e. not None
+            if self.user.get_full_name().strip() != "":
+                return self.user.get_full_name().strip()
         return self.defined_name
 
     def __str__(self):
