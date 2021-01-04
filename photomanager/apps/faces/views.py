@@ -6,6 +6,8 @@ from photomanager.apps.faces.models import Face
 
 
 class FacesListView(ListView):
+    """View for listing all the faces."""
+
     model = Face
     paginate_by = 100
 
@@ -28,6 +30,8 @@ class FacesListView(ListView):
 
 
 class FaceDetailView(DetailView):
+    """View for listing all the photos that contain the given face."""
+
     model = Face
 
     def get_context_data(self, **kwargs):

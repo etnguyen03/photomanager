@@ -40,6 +40,13 @@ class Album(models.Model):
 
 
 class AlbumShareLink(models.Model):
+    """
+    Represents a share link tied to an album.
+
+    Allows for public viewing of an album and its associated photos with a
+    unique link, but without making all the photos in the album public.
+    """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
 

@@ -60,6 +60,8 @@ def view_album_share(request, album_id: str, share_album_id: str) -> HttpRespons
 
 
 class AlbumEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """View for editing the metadata on an album."""
+
     model = Album
     fields = ["name", "description", "publicly_accessible", "photos"]
     template_name_suffix = "_update"
@@ -67,11 +69,18 @@ class AlbumEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy("albums:display", kwargs={"album_id": self.kwargs["pk"]})
 
-    def test_func(self):
+    def test_func(self) -> bool:
+        """
+        Used to ensure that only the owner of this album can modify it.
+
+        :return: True if the owner of this album is the logged in user, false otherwise
+        """
         return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
 
 
 class AlbumCreateView(LoginRequiredMixin, CreateView):
+    """View to create an album."""
+
     model = Album
     fields = ["name", "description", "publicly_accessible", "photos"]
 
@@ -84,31 +93,49 @@ class AlbumCreateView(LoginRequiredMixin, CreateView):
 
 
 class AlbumListView(ListView):
+    """View to list albums."""
+
     model = Album
     paginate_by = 25
 
     def get_queryset(self):
+        # If the user isn't authenticated, then only the albums that are publicly accessible are visible
         if not self.request.user.is_authenticated:
             return Album.objects.filter(publicly_accessible=True).order_by(
                 "-creation_time"
             )
         else:
+            # Otherwise, only show the albums where the owner is the logged in user
             return Album.objects.filter(owner=self.request.user).order_by(
                 "-creation_time"
             )
 
 
 class AlbumDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """View to handle deletion of an album, but not the photos within it."""
+
     model = Album
     success_url = reverse_lazy("albums:list")
 
-    def test_func(self):
+    def test_func(self) -> bool:
+        """
+        Used to ensure that only the owner of this album can modify it.
+
+        :return: True if the owner of this album is the logged in user, false otherwise
+        """
         return get_object_or_404(Album, id=self.kwargs["pk"]).owner == self.request.user
 
 
 @login_required
 @require_POST
 def album_share_link_create(request, album_id: str) -> HttpResponse:
+    """
+    View to handle the creation of share links for albums.
+
+    :param request: Request object
+    :param album_id: The album ID to create a link for
+    :return: HttpResponse
+    """
     album = get_object_or_404(Album, id=album_id)
 
     if request.user != album.owner:
@@ -122,6 +149,8 @@ def album_share_link_create(request, album_id: str) -> HttpResponse:
 
 
 class AlbumShareLinkList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """View to list AlbumShareLinks."""
+
     model = AlbumShareLink
     paginate_by = 25
 
@@ -143,6 +172,8 @@ class AlbumShareLinkList(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 class AlbumShareLinkDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """View to handle the deletion of AlbumShareLinks."""
+
     model = AlbumShareLink
 
     def get_success_url(self):
@@ -158,6 +189,8 @@ class AlbumShareLinkDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 class AlbumShareLinkEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """View to handle editing the metadata of AlbumShareLinks."""
+
     model = AlbumShareLink
     fields = ["description"]
     template_name_suffix = "_update"

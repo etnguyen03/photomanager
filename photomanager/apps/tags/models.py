@@ -5,6 +5,10 @@ from photomanager.apps.users.models import User
 
 
 class PhotoTag(models.Model):
+    """
+    Represents a tag that can be applied to photos.
+    """
+
     tag = models.SlugField(primary_key=True)
 
     @property

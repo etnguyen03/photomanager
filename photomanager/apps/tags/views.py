@@ -45,11 +45,14 @@ class ListTagView(ListView):
 
 
 class DetailTagView(DetailView):
+    """View to show the photos that are tagged with this tag."""
+
     model = PhotoTag
 
     def get_context_data(self, **kwargs):
         context = super(DetailTagView, self).get_context_data(**kwargs)
 
+        # TODO: pagination?
         # If the user is authenticated, they can see their photos that are tagged with this tag
         if self.request.user.is_authenticated:
             context["photos"] = self.object.photo_set.filter(user=self.request.user)

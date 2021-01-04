@@ -29,14 +29,30 @@ from .tasks import process_image, scan_dir_for_changes
 
 
 @login_required
-def rescan_directory(request):
+def rescan_directory(request) -> HttpResponse:
+    """
+    Rescans the directory of the logged in user for new files.
+
+    :param request: Request object
+    :return: HttpResponse
+    """
     scan_dir_for_changes.delay(request.user.subdirectory, request.user.username)
+
+    # TODO: return a redirect
     return HttpResponse("OK")
 
 
 @login_required
 @require_POST
 def reprocess_file(request, image_id):
+    """
+    Reprocess a file, or regenerate an image's metadata.
+    Reprocessing is done asynchronously.
+
+    :param request: Request object
+    :param image_id: The ID of the photo to regenerate
+    :return: HttpResponse - a redirect
+    """
     photo = get_object_or_404(Photo, id=image_id)
 
     if photo.user != request.user:
@@ -108,6 +124,7 @@ def _get_raw_image(request, photo: Photo) -> FileResponse:
 def get_raw_image(request, image_id) -> HttpResponse:
     """
     Returns the image specified by image_id
+
     :param request: Django request
     :param image_id: Image ID to request
     :return: FileResponse, or HttpResponse for 403s
@@ -233,11 +250,18 @@ def view_single_photo_album_share(request, image_id, album_share_id):
 
 
 class PhotoUpdate(UserPassesTestMixin, UpdateView):
+    """View for updating the metadata on a photo."""
+
     model = Photo
     fields = ["description", "tags", "faces", "license", "publicly_accessible"]
     template_name = "photos/photo_update.html"
 
     def test_func(self):
+        """
+        Used to ensure that only the owner of the photo can make changes to it.
+
+        :return: True if the logged in user is the owner of the photo, false otherwise.
+        """
         return self.request.user == self.get_object().user
 
     def get_success_url(self):
@@ -247,15 +271,22 @@ class PhotoUpdate(UserPassesTestMixin, UpdateView):
 
 
 class IndexView(ListView):
+    """
+    View for listing all the photos that the user has access to.
+    Used for the index page.
+    """
+
     model = Photo
     paginate_by = 100
 
     def get_queryset(self):
+        # If the user isn't authenticated, return all the publicly accessible images
         if not self.request.user.is_authenticated:
             return Photo.objects.filter(publicly_accessible=True).order_by(
                 "-photo_taken_time"
             )
         else:
+            # If the user is authenticated, return only that user's photos
             return Photo.objects.filter(user=self.request.user).order_by(
                 "-photo_taken_time"
             )

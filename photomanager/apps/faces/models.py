@@ -45,7 +45,12 @@ class Face(models.Model):
     )
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """
+        Gets the human readable name of this Face.
+
+        :return: The corresponding User's full name, if one exists, or the defined name otherwise
+        """
         if self.user is User:  # i.e. not None
             if self.user.get_full_name().strip() != "":
                 return self.user.get_full_name().strip()
