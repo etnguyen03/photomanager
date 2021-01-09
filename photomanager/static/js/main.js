@@ -8,4 +8,10 @@ $(document).ready(function() {
             element.parent().children(".spinner-wrapper").hide();
         }
     });
+
+    // Selectize
+    $("#id_faces").selectize();
+    $("#id_tags").selectize({
+        // create: true,
+    });
 });
