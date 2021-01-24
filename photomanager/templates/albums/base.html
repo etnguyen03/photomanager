@@ -9,6 +9,7 @@
                                                 {% url "albums:display" album.id %}
                                             {% endif %}">{{ album.name }}</a></h1>
             <p class="lead">{{ album.description }}</p>
+            {# TODO: require the user to be the same user as the album owner #}
             {% if user.is_authenticated %}
                 <div class="row">
                     <div class="col">
