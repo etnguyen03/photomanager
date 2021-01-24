@@ -8,6 +8,14 @@
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-4"><a href="{% url "faces:display" object.id %}">{{ object }}</a></h1>
+            {# TODO: restrict edit view to a select group of users? #}
+            {% if user.is_authenticated %}
+                <div class="row">
+                    <div class="col">
+                        <a href="{% url "faces:edit" object.id %}" class="btn btn-outline-primary">Edit</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
     <div class="container-fluid">

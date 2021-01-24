@@ -1,6 +1,6 @@
 from django.db.models.functions import Lower
 from django.http import Http404
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, UpdateView
 
 from photomanager.apps.faces.models import Face
 
@@ -57,3 +57,8 @@ class FaceDetailView(DetailView):
             context["photos"] = self.object.photo_set.filter(publicly_accessible=True)
 
         return context
+
+
+class FaceUpdateView(UpdateView):
+    model = Face
+    fields = ["user", "defined_name"]
