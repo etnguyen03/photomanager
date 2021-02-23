@@ -29,6 +29,7 @@ class PhotoAdmin(admin.ModelAdmin):
                 "fields": (
                     "id",
                     "file",
+                    "file_type",
                     "user",
                     "description",
                     "license",

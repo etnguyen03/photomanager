@@ -29,6 +29,12 @@ class Photo(models.Model):
     )
     description = models.TextField(help_text="Description for this photo.", blank=True)
 
+    class FileTypes(models.IntegerChoices):
+        IMAGE = 1
+        VIDEO = 2
+
+    file_type = models.IntegerField(choices=FileTypes.choices, null=False, default=1)
+
     creation_time = models.DateTimeField(
         auto_now_add=True, help_text="Photo creation time.", null=True
     )

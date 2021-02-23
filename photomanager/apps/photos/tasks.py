@@ -97,9 +97,13 @@ def scan_dir_for_changes(directory: Path, username: str) -> None:
         if "image" in mime:
             # file must be prepended with user.subdirectory
             actual_path = os.path.join("/data/", str(user.subdirectory), file)
-            photo = Photo.objects.get_or_create(file=actual_path, user=user)
+            photo = Photo.objects.get_or_create(
+                file=actual_path, file_type=Photo.FileTypes.IMAGE, user=user
+            )
             if photo[1]:  # If this was just created by get_or_create
                 process_image.delay(photo[0].id)
+        elif "video" in mime:
+            pass
 
 
 @shared_task
