@@ -148,6 +148,7 @@ LOGIN_REDIRECT_URL = reverse_lazy("index")
 LOGOUT_REDIRECT_URL = reverse_lazy("index")
 
 AUTH_USER_MODEL = "users.User"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Celery
 CELERY_RESULT_BACKEND = "django-db"
